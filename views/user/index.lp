@@ -14,7 +14,7 @@
   </form>
 
   <p>
-    <a href="<%= page:make_url('user/create') %>" role="button">Create new user</a>
+    <a href="<%= page:make_url('user/create') %>" role="button">&plus; Create a new user</a>
   </p>
 
   <table role="grid" class="table">

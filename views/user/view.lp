@@ -1,25 +1,40 @@
-<h2>
-  View user #<%= user.id %>
-  <small>(<a href="<%= page:make_url('user/update', {id = user.id} ) %>" >update</a>)</small>
-  <small>(<a href="<%= page:make_url('user/delete', {id = user.id} ) %>" >delete</a>)</small>
-</h2>
-<table class="table">
-  <tr>
-    <td>id</td>
-    <td><%= user.id %></td>
-  </tr>
-  <tr>
-    <td>username</td>
-    <td><%= user.username %></td>
-  </tr>
-  <tr>
-    <td>role_id</td>
-    <td><%= user.role_id %></td>
-  </tr>
-  <tr>
-    <td>password</td>
-    <td><%= user.password %></td>
-  </tr>
-</table>
-<br/>
-<a href="<%= page:make_url('user/index') %>"><- Back to View All</a>
+<section>
+  <hgroup>
+    <h1><%= user.username %></h1>
+    <h2>View user account information</h2>
+  </hgroup>
+
+  <p>
+    <a href="<%= page:make_url('user/index') %>" role="button">&lt; Back to users</a>
+  </p>
+
+  <table>
+    <tbody>
+      <tr>
+        <th scope="row">ID</th>
+        <td><%= user.id %></td>
+      </tr>
+      <tr>
+        <th scope="row">Username</th>
+        <td><%= user.username %></td>
+      </tr>
+      <tr>
+        <th scope="row">Rol</th>
+        <td><%= user.role.description %></td>
+      </tr>
+      <tr>
+        <th scope="row">Created at</th>
+        <td><%= user.created_at %></td>
+      </tr>
+      <tr>
+        <th scope="row">Updated at</th>
+        <td><%= user.updated_at %></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="grid">
+    <a href="<%= page:make_url('user/delete', {id = user.id}) %>" role="button" class="contrast">Delete</a>
+    <a href="<%= page:make_url('user/update', {id = user.id}) %>" role="button" class="secondary">Update</a>
+  </div>
+</section>

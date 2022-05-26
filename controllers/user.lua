@@ -114,6 +114,7 @@ function M.view(page)
   if not user then
     return 404
   end
+  page.title = user.username
   page:render('view', {user = user})
 end
 
