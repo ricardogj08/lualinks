@@ -1,26 +1,29 @@
-<?lua local form = require "sailor.form" ?>
-<h2>Update user</h2>
-<?lua if saved == false then ?>
-  There was an error while saving.
-<?lua end ?>
-<form method="post">
-  <div class="form-group">
-    <label>id:</label>
-    <%= form.text(user,'id', 'class="form-control" placeholder="id"') %>
-  </div>
-  <div class="form-group">
-    <label>username:</label>
-    <%= form.text(user,'username', 'class="form-control" placeholder="username"') %>
-  </div>
-  <div class="form-group">
-    <label>role_id:</label>
-    <%= form.text(user,'role_id', 'class="form-control" placeholder="role_id"') %>
-  </div>
-  <div class="form-group">
-    <label>password:</label>
-    <%= form.text(user,'password', 'class="form-control" placeholder="password"') %>
-  </div>
-  <input type="submit" class="btn btn-primary"/>
-</form>
-<br/>
-<a href="<%= page:make_url('user/index') %>"><- Back to View All</a>
+<% local form = require 'sailor.form' %>
+<article>
+  <hgroup>
+    <h1>Edit account</h1>
+    <h2>Edit user account information</h2>
+  </hgroup>
+
+  <% if saved == false then %>
+    <small>The user data was not changed.</small>
+  <% end %>
+
+  <form method="post">
+    <%= form.text(user, 'username', 'placeholder="Username" minlength="1" maxlength="64" required') %>
+    <small><%= user.errors.username or '' %></small>
+
+    <%= form.dropdown(user, 'role_id', roles, 'Please select a role...', 'required') %>
+    <small><%= user.errors.role_id or '' %></small>
+
+    <%= form.password(user, 'password', 'placeholder="Password" minlength="8" maxlength="64"') %>
+    <small><%= user.errors.password or '' %></small>
+
+    <input type="password" name="pass2" id="pass2" placeholder="Confirm password" minlength="8" maxlength="64">
+
+    <div class="grid">
+      <input type="submit" value="Save">
+      <a href="<%= page:make_url('user/index') %>"><input type="button" class="secondary" value="Cancel"></a>
+    </div>
+  </form>
+</article>

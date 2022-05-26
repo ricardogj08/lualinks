@@ -1,7 +1,7 @@
 local M = {}
-local User = require "sailor.model"("user")
-local Role = require "sailor.model"("role")
-local valua = require "valua"
+local User = require 'sailor.model'('user')
+local Role = require 'sailor.model'('role')
+local valua = require 'valua'
 
 --- Valida todos los campos del formulario.
 -- @param user Instancia actual del modelo user.
@@ -12,12 +12,12 @@ local function validate(user, page, input)
   err = {}
   if input.username then
     if User:find_by_attributes({username = user.username}) then
-      err.username = "username alredy exists"
+      err.username = 'username alredy exists'
     end
   end
   if input.role_id then
     if not Role:find_by_id(user.role_id) then
-      err.role_id = "Invalid role id"
+      err.role_id = 'Invalid role id'
     end
   end
   if input.password then
@@ -39,18 +39,19 @@ end
 
 --- Lista todos los usuarios.
 function M.index(page)
-  local users = require "sailor.model"("user"):find_all()
-  page:render("index", {users = users})
+  local users = User:find_all()
+  page:render('index', {users = users})
 end
 
 --- Registra un nuevo usuario.
 function M.create(page)
   local user = User:new()
   local saved
-  -- Valida si existen los campos del formulario.
+  -- Valida si existe un campo del formulario.
   if next(page.POST) then
     -- Obtiene todos los campos del formulario.
     user:get_post(page.POST)
+    -- Valida todos los campos del formulario.
     user.errors = validate(user, page, {
       username = true,
       role_id  = true,
@@ -60,47 +61,67 @@ function M.create(page)
     -- y registra un nuevo usuario.
     saved = not next(user.errors) and user:save()
     if saved then
-      page:redirect("user/index")
+      page:redirect('user/index')
     end
   end
-  page:render("create", {user = user, saved = saved, roles = roles()})
+  page:render('create', {user = user, saved = saved, roles = roles()})
 end
 
 --- Modifica los datos de un usuario.
 function M.update(page)
-  local user = require "sailor.model"("user"):find_by_id(page.GET.id)
+  id = page.GET.id
+  local user = User:find_by_id(id)
   if not user then
     return 404
   end
   local saved
+  -- Valida si existe un campo del formulario.
   if next(page.POST) then
+    -- Elimina campos vacíos.
+    for k, v in pairs(page.POST) do
+      if v == '' then
+        page.POST[k] = nil
+      end
+    end
+    -- Obtiene todos los campos del formulario.
     user:get_post(page.POST)
-    saved = user:update()
+    local u = User:find_by_id(id)
+    local input = {}
+    -- Valida solo los campos modificados.
+    for k, v in pairs(user) do
+      if u[k] ~= v then
+        input[k] = true
+      end
+    end
+    user.errors = validate(user, page, input)
+    -- Desde el modelo valida todos los campos del formulario
+    -- y modifica los datos de un usuario.
+    saved = not next(user.errors) and user:update()
     if saved then
-      page:redirect("user/index")
+      page:redirect('user/update', {id = id})
     end
   end
-  page:render("update", {user = user, saved = saved})
+  user.password = nil
+  page:render('update', {user = user, saved = saved, roles = roles()})
 end
 
 --- Consulta los datos de un usuario.
 function M.view(page)
-  local user = require "sailor.model"("user"):find_by_id(page.GET.id)
+  local user = User:find_by_id(page.GET.id)
   if not user then
     return 404
   end
-  page:render("view", {user = user})
+  page:render('view', {user = user})
 end
 
 --- Elimina un usuario.
 function M.delete(page)
-  local user = require "sailor.model"("user"):find_by_id(page.GET.id)
+  local user = User:find_by_id(page.GET.id)
   if not user then
     return 404
   end
-
   if user:delete() then
-    page:redirect("user/index")
+    page:redirect('user/index')
   end
 end
 

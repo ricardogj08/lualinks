@@ -1,7 +1,7 @@
 <% local form = require 'sailor.form' %>
 <article>
   <hgroup>
-    <h1>Register</h1>
+    <h1>Create account</h1>
     <h2>Create a new user account</h2>
   </hgroup>
 
