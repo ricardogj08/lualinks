@@ -6,10 +6,10 @@ local user = {}
 user.attributes = {
   -- {<attribute> = <validation function, valua required>}
   -- Ex. {id = val:new().integer()}
-  { id = val:new().not_empty().integer().min(1) },
-  { username = val:new().not_empty().string().len(1, 64) },
+  { id = val:new().integer().min(1) },
+  { username = val:new().not_empty().string().len(1, 64).no_white() },
   { role_id = val:new().not_empty().integer().min(1) },
-  { password = val:new().not_empty().string().no_white().len(1, 256) }
+  { password = val:new().not_empty().string().len(1, 256).no_white() }
 }
 
 user.db = {

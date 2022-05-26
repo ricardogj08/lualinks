@@ -56,5 +56,5 @@ CREATE TABLE IF NOT EXISTS link_tag (
   CONSTRAINT link_tag_link_id_tag_id_uk UNIQUE (link_id, tag_id)
 );
 
-INSERT IGNORE INTO role VALUES(1, 'admin', 'Administrador');
-INSERT IGNORE INTO role VALUES(2, 'user', 'Usuario');
+INSERT IGNORE INTO role VALUES(1, 'admin', 'Administrator');
+INSERT IGNORE INTO role VALUES(2, 'user', 'User');

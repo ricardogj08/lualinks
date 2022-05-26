@@ -6,7 +6,7 @@ local role = {}
 role.attributes = {
   -- {<attribute> = <validation function, valua required>}
   -- Ex. {id = val:new().integer()}
-  { id = val:new().not_empty().integer().min(1) },
+  { id = val:new().integer().min(1) },
   { name = val:new().not_empty().string().len(1, 24) },
   { description = val:new().not_empty().string().len(1, 256) }
 }
