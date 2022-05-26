@@ -1,4 +1,4 @@
-local xavante = require "xavante" 
+local xavante = require "xavante"
 local filehandler = require "xavante.filehandler"
 local cgiluahandler = require "xavante.cgiluahandler"
 local redirect = require "xavante.redirecthandler"

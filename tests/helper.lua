@@ -3,7 +3,7 @@
 local helper = {}
 
 function helper.example()
-	-- do something
+  -- do something
 end
 
 return helper

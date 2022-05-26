@@ -63,7 +63,6 @@ function M.create(page)
       page:redirect("user/index")
     end
   end
-  page:inspect(user.errors)
   page:render("create", {user = user, saved = saved, roles = roles()})
 end
 
