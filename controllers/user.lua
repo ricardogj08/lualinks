@@ -22,7 +22,7 @@ local function validate(user, page, input)
   end
   if input.password then
     _, err.password = valua:new().not_empty().string().len(1, 64).
-      no_white().compare(page.POST.pass2)(user.password)
+      no_white().compare(page.POST.confirm_password)(user.password)
   end
   return err
 end
@@ -40,6 +40,7 @@ end
 --- Lista todos los usuarios.
 function M.index(page)
   local users = User:find_all()
+  page.title = 'Users'
   page:render('index', {users = users})
 end
 
@@ -47,6 +48,7 @@ end
 function M.create(page)
   local user = User:new()
   local saved
+  page.title = 'Create new user'
   -- Valida si existe un campo del formulario.
   if next(page.POST) then
     -- Obtiene todos los campos del formulario.
@@ -69,12 +71,13 @@ end
 
 --- Modifica los datos de un usuario.
 function M.update(page)
-  id = page.GET.id
+  local id = page.GET.id
   local user = User:find_by_id(id)
   if not user then
     return 404
   end
   local saved
+  page.title = 'Edit user'
   -- Valida si existe un campo del formulario.
   if next(page.POST) then
     -- Elimina campos vacíos.

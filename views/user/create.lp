@@ -1,7 +1,7 @@
 <% local form = require 'sailor.form' %>
 <article>
   <hgroup>
-    <h1>Create account</h1>
+    <h1>Create new user</h1>
     <h2>Create a new user account</h2>
   </hgroup>
 
@@ -19,7 +19,7 @@
     <%= form.password(user, 'password', 'placeholder="Password" minlength="8" maxlength="64" required') %>
     <small><%= user.errors.password or '' %></small>
 
-    <input type="password" name="pass2" id="pass2" placeholder="Confirm password" minlength="8" maxlength="64" required>
+    <input type="password" name="confirm_password" placeholder="Confirm password" minlength="8" maxlength="64" required>
 
     <div class="grid">
       <input type="submit" value="Register">
