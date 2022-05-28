@@ -23,11 +23,11 @@ tag.relations = {
     attribute = 'user_id'
   },
 
-  links = {
+  bookmarks = {
     relation = 'MANY_MANY',
-    model = 'link',
-    table = 'link_tag',
-    attributes = {'tag_id', 'link_id'}
+    model = 'bookmark',
+    table = 'bookmark_tag',
+    attributes = {'tag_id', 'bookmark_id'}
   }
 }
 

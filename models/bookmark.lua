@@ -1,9 +1,9 @@
 -- Uncomment this to use validation rules
 local val = require 'valua'
-local link = {}
+local bookmark = {}
 
 -- Attributes and their validation rules
-link.attributes = {
+bookmark.attributes = {
   -- {<attribute> = <validation function, valua required>}
   -- Ex. {id = val:new().integer()}
   { id = val:new().integer().min(1) },
@@ -13,18 +13,18 @@ link.attributes = {
   { description = val:new().not_empty().string().len(1, 1024) }
 }
 
-link.db = {
+bookmark.db = {
   key = 'id',
-  table = 'link'
+  table = 'bookmark'
 }
 
-link.relations = {
+bookmark.relations = {
   tags = {
     relation = 'MANY_MANY',
     model = 'tag',
-    table = 'link_tag',
-    attributes = {'link_id', 'tag_id'}
+    table = 'bookmark_tag',
+    attributes = {'bookmark_id', 'tag_id'}
   }
 }
 
-return link
+return bookmark

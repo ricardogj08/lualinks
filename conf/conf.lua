@@ -40,7 +40,7 @@ local conf = {
 
   lua_at_client = {
     -- starlight is default. Other options are moonshine, lua51js and luavmjs. They need to be downloaded.
-    vm = "starlight",
+    vm = 'starlight',
   },
 
   debug = {

@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS user (
   CONSTRAINT user_username_uk UNIQUE (username)
 );
 
-CREATE TABLE IF NOT EXISTS link (
+CREATE TABLE IF NOT EXISTS bookmark (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   user_id MEDIUMINT UNSIGNED NOT NULL,
   url VARCHAR(2048) NOT NULL,
@@ -32,9 +32,9 @@ CREATE TABLE IF NOT EXISTS link (
   description VARCHAR(1024) NOT NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT link_id_pk PRIMARY KEY (id),
-  CONSTRAINT link_user_id_fk FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT link_user_id_url_uk UNIQUE (url, user_id)
+  CONSTRAINT bookmark_id_pk PRIMARY KEY (id),
+  CONSTRAINT bookmark_user_id_fk FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT bookmark_user_id_url_uk UNIQUE (url, user_id)
 );
 
 CREATE TABLE IF NOT EXISTS tag (
@@ -46,14 +46,14 @@ CREATE TABLE IF NOT EXISTS tag (
   CONSTRAINT tag_name_user_id_uk UNIQUE (name, user_id)
 );
 
-CREATE TABLE IF NOT EXISTS link_tag (
+CREATE TABLE IF NOT EXISTS bookmark_tag (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  link_id BIGINT UNSIGNED NOT NULL,
+  bookmark_id BIGINT UNSIGNED NOT NULL,
   tag_id BIGINT UNSIGNED NOT NULL,
-  CONSTRAINT link_tag_id_pk PRIMARY KEY (id),
-  CONSTRAINT link_tag_link_id_fk FOREIGN KEY (link_id) REFERENCES link (id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT link_tag_tag_id_fk FOREIGN KEY (tag_id) REFERENCES tag (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT link_tag_link_id_tag_id_uk UNIQUE (link_id, tag_id)
+  CONSTRAINT bookmark_tag_id_pk PRIMARY KEY (id),
+  CONSTRAINT bookmark_tag_bookmark_id_fk FOREIGN KEY (bookmark_id) REFERENCES bookmark (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT bookmark_tag_tag_id_fk FOREIGN KEY (tag_id) REFERENCES tag (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT bookmark_tag_bookmark_id_tag_id_uk UNIQUE (bookmark_id, tag_id)
 );
 
 INSERT IGNORE INTO role VALUES(1, 'admin', 'Administrator');
