@@ -33,8 +33,8 @@
     </tbody>
   </table>
 
-  <div class="grid">
+  <p>
     <a href="<%= page:make_url('user/delete', {id = user.id}) %>" role="button" class="contrast">Delete</a>
     <a href="<%= page:make_url('user/update', {id = user.id}) %>" role="button" class="secondary">Update</a>
-  </div>
+  </p>
 </section>

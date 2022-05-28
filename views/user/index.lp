@@ -9,8 +9,8 @@
     <h2>List all user accounts</h2>
   </hgroup>
 
-  <form>
-    <input type="search" name="search" placeholder="Search" autofocus>
+  <form method="post" action="<%= page:make_url('user/index', {search = search}) %>">
+    <input type="search" name="search" placeholder="Search" value="<%= search %>" autofocus>
   </form>
 
   <p>
@@ -27,7 +27,7 @@
     </thead>
     <tbody>
       <% for k, v in pairs(users) do %>
-        <tr onclick="location.href='<%= page:make_url('user/view',{id = v.id}) %>'">
+        <tr onclick="location.href='<%= page:make_url('user/view', {id = v.id}) %>'">
           <th scope="row"><%= v.id %></th>
           <td><%= v.username %></td>
           <td><%= v.role.description %></td>
@@ -35,4 +35,11 @@
       <% end %>
     </tbody>
   </table>
+  <% if search == '' then %>
+    <a href="<%= page:make_url('user/index', {page = p - 1}) %>" role="button" class="contrast outline">&lt;</a>
+    <a href="<%= page:make_url('user/index', {page = p + 1}) %>" role="button">&gt;</a>
+  <% else %>
+    <a href="<%= page:make_url('user/index', {page = p - 1, search = search}) %>" role="button" class="contrast outline">&lt;</a>
+    <a href="<%= page:make_url('user/index', {page = p + 1, search = search}) %>" role="button">&gt;</a>
+  <% end %>
 </section>

@@ -60,19 +60,19 @@ local simplerules = {
   -- cgiluahandler example
   {
     match = {"%.lp$", "%.lp/.*$", "%.lua$", "%.lua/.*$"},
-    with  = cgiluahandler.makeHandler (webDir, { reload = true })
+    with  = cgiluahandler.makeHandler (webDir, {reload = true})
   },
 
   -- filehandler example
   {
     match = ".",
     with  = filehandler,
-    params = { baseDir = webDir }
+    params = {baseDir = webDir}
   },
 }
 
 xavante.HTTP{
-  server = { host = "*", port = 8080 },
+  server = {host = "*", port = 8080},
 
   defaultHost = {
     rules = simplerules

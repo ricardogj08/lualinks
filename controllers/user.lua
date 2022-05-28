@@ -2,6 +2,7 @@ local M = {}
 local User = require 'sailor.model'('user')
 local Role = require 'sailor.model'('role')
 local valua = require 'valua'
+local db = require 'sailor.db'
 
 --- Valida todos los campos del formulario.
 -- @param user Instancia actual del modelo user.
@@ -9,7 +10,7 @@ local valua = require 'valua'
 -- @param input Tabla con todos los campos a validar.
 -- @return Una tabla de errores por cada campo.
 local function validate(user, page, input)
-  err = {}
+  local err = {}
   if input.username then
     if User:find_by_attributes({username = user.username}) then
       err.username = 'username alredy exists'
@@ -39,33 +40,58 @@ end
 
 --- Lista todos los usuarios.
 function M.index(page)
-  local users = User:find_all()
+  -- Sistema de búsqueda.
+  local search = page.POST.search
+  if search then
+    return page:redirect('user/index', {search = search})
+  end
+  search = page.GET.search or ''
+  -- Sistema de paginación.
+  local p = tonumber(page.GET.page) or 1
+  if p < 1 then
+    if search == '' then
+      return page:redirect('user/index', {page = 1})
+    end
+    return page:redirect('user/index', {search = search, page = 1})
+  end
+  local limit = 15
+  local offset = limit * (p - 1)
+  -- Búsqueda de usuarios.
+  db.connect()
+  local users = User:find_all("username LIKE '%"..db.escape(search)..
+    "%' ORDER BY id LIMIT "..limit..' OFFSET '..offset)
+  db.close()
+  -- Sistema de paginación sin resultados.
+  if not next(users) and p > 1 then
+    if search == '' then
+      return page:redirect('user/index', {page = p - 1})
+    end
+    return page:redirect('user/index', {search = search, page = p - 1})
+  end
   page.title = 'Users'
-  page:render('index', {users = users})
+  page:render('index', {users = users, search = search, p = p})
 end
 
 --- Registra un nuevo usuario.
 function M.create(page)
   local user = User:new()
   local saved
-  page.title = 'Create new user'
   -- Valida si existe un campo del formulario.
   if next(page.POST) then
     -- Obtiene todos los campos del formulario.
     user:get_post(page.POST)
     -- Valida todos los campos del formulario.
     user.errors = validate(user, page, {
-      username = true,
-      role_id  = true,
-      password = true
+      username = true, role_id = true, password = true
     })
     -- Desde el modelo valida todos los campos del formulario
     -- y registra un nuevo usuario.
     saved = not next(user.errors) and user:save()
     if saved then
-      page:redirect('user/index')
+      return page:redirect('user/index')
     end
   end
+  page.title = 'Create a new user'
   page:render('create', {user = user, saved = saved, roles = roles()})
 end
 
@@ -77,7 +103,6 @@ function M.update(page)
     return 404
   end
   local saved
-  page.title = 'Edit user'
   -- Valida si existe un campo del formulario.
   if next(page.POST) then
     -- Elimina campos vacíos.
@@ -105,6 +130,7 @@ function M.update(page)
     end
   end
   user.password = nil
+  page.title = 'Edit user'
   page:render('update', {user = user, saved = saved, roles = roles()})
 end
 
