@@ -10,7 +10,7 @@
   <% end %>
 
   <form method="post">
-    <%= form.text(user, 'username', 'placeholder="Username" minlength="1" maxlength="64" required') %>
+    <%= form.text(user, 'username', 'placeholder="Username" maxlength="64" required') %>
     <small><%= user.errors.username or '' %></small>
 
     <%= form.dropdown(user, 'role_id', roles, 'Please select a role...', 'required') %>

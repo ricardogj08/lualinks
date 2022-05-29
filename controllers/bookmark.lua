@@ -1,5 +1,6 @@
 local M = {}
 local Bookmark = require 'sailor.model'('bookmark')
+local Tag = require 'sailor.model'('tag')
 local valua = require 'valua'
 local db = require 'sailor.db'
 
@@ -10,15 +11,17 @@ end
 
 function M.create(page)
   local bookmark = Bookmark:new()
+  local tag = Tag:new()
   local saved
   if next(page.POST) then
     bookmark:get_post(page.POST)
+    tag:get_post(page.POST)
     saved = bookmark:save()
     if saved then
-      page:redirect('bookmark/index')
+      return page:redirect('bookmark/index')
     end
   end
-  page:render('create', {bookmark = bookmark, saved = saved})
+  page:render('create', {bookmark = bookmark, tag = tag, saved = saved})
 end
 
 function M.update(page)

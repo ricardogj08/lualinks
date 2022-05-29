@@ -10,7 +10,7 @@ bookmark.attributes = {
   { user_id = val:new().not_empty().integer().min(1) },
   { url = val:new().not_empty().string().len(1, 2048) },
   { title = val:new().not_empty().string().len(1, 512) },
-  { description = val:new().not_empty().string().len(1, 1024) }
+  { description = val:new().optional().string().len(1, 1024) }
 }
 
 bookmark.db = {

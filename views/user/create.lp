@@ -1,7 +1,7 @@
 <% local form = require 'sailor.form' %>
 <article>
   <hgroup>
-    <h1>Create a new user</h1>
+    <h1>Create user</h1>
     <h2>Create a new user account</h2>
   </hgroup>
 
@@ -10,7 +10,7 @@
   <% end %>
 
   <form method="post">
-    <%= form.text(user, 'username', 'placeholder="Username" minlength="1" maxlength="64" required') %>
+    <%= form.text(user, 'username', 'placeholder="Username" maxlength="64" required') %>
     <small><%= user.errors.username or '' %></small>
 
     <%= form.dropdown(user, 'role_id', roles, 'Please select a role...', 'required') %>

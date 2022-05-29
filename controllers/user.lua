@@ -91,7 +91,7 @@ function M.create(page)
       return page:redirect('user/index')
     end
   end
-  page.title = 'Create a new user'
+  page.title = 'Create user'
   page:render('create', {user = user, saved = saved, roles = roles()})
 end
 
@@ -126,7 +126,7 @@ function M.update(page)
     -- y modifica los datos de un usuario.
     saved = not next(user.errors) and user:update()
     if saved then
-      page:redirect('user/update', {id = id})
+      return page:redirect('user/update', {id = id})
     end
   end
   user.password = nil
@@ -137,22 +137,21 @@ end
 --- Consulta los datos de un usuario.
 function M.view(page)
   local user = User:find_by_id(page.GET.id)
-  if not user then
-    return 404
+  if user then
+    page.title = user.username
+    return page:render('view', {user = user})
   end
-  page.title = user.username
-  page:render('view', {user = user})
+  return 404
 end
 
 --- Elimina un usuario.
 function M.delete(page)
   local user = User:find_by_id(page.GET.id)
-  if not user then
-    return 404
+  if user then
+    user:delete()
+    return page:redirect('user/index')
   end
-  if user:delete() then
-    page:redirect('user/index')
-  end
+  return 404
 end
 
 return M
