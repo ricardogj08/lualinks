@@ -56,5 +56,5 @@ CREATE TABLE IF NOT EXISTS bookmark_tag (
   CONSTRAINT bookmark_tag_bookmark_id_tag_id_uk UNIQUE (bookmark_id, tag_id)
 );
 
-INSERT IGNORE INTO role VALUES(1, 'admin', 'Administrator');
-INSERT IGNORE INTO role VALUES(2, 'user', 'User');
+INSERT IGNORE INTO role VALUES (1, 'admin', 'Administrator'), (2, 'user', 'User');
+INSERT IGNORE INTO user (id, username, role_id, password) VALUES (1, 'admin', 1, '$2a$12$BjJg4m/OA898WDkPJ1oL1./arBs0rs8oKQArOw8y1SmIeI40d2WKa');

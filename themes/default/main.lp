@@ -1,4 +1,7 @@
 <% local access = require 'sailor.access' %>
+<% local session = require 'sailor.session' %>
+<% session.open(require 'sailor'.r) %>
+<% session = session.data %>
 <!doctype html>
 <html lang="es">
   <head>
@@ -20,7 +23,7 @@
           <li><a href="<%= page:make_url('user/index') %>" class="contrast">Users</a></li>
           <li>
             <details role="list" dir="rtl">
-              <summary aria-haspopup="listbox" role="link" class="secondary">ricardogj08</summary>
+              <summary aria-haspopup="listbox" role="link" class="secondary"><%= session.login %></summary>
               <ul role="listbox">
                 <li><a>Settings</a></li>
                 <li><a href="<%= page:make_url('user/logout') %>">Logout</a></li>

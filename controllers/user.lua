@@ -44,6 +44,9 @@ end
 
 --- Inicio de sesión.
 function M.login(page)
+  if not access.is_guest() then
+    return page:redirect('bookmark/index')
+  end
   local user = User:new()
   local auth = {}
   -- Valida si existe un campo del formulario.
