@@ -3,14 +3,21 @@ local Bookmark = require 'sailor.model'('bookmark')
 local Tag = require 'sailor.model'('tag')
 local valua = require 'valua'
 local db = require 'sailor.db'
+local access = require 'sailor.access'
 
 function M.index(page)
+  if access.is_guest() then
+    return page:redirect('user/login')
+  end
   local bookmarks = Bookmark:find_all()
   page.title = 'Bookmarks'
   page:render('index', {bookmarks = bookmarks})
 end
 
 function M.create(page)
+  if access.is_guest() then
+    return page:redirect('user/login')
+  end
   local bookmark = Bookmark:new()
   local tag = Tag:new()
   local saved
@@ -26,6 +33,9 @@ function M.create(page)
 end
 
 function M.update(page)
+  if access.is_guest() then
+    return page:redirect('user/login')
+  end
   local bookmark = Bookmark:find_by_id(page.GET.id)
   if not bookmark then
     return 404
@@ -42,6 +52,9 @@ function M.update(page)
 end
 
 function M.view(page)
+  if access.is_guest() then
+    return page:redirect('user/login')
+  end
   local bookmark = Bookmark:find_by_id(page.GET.id)
   if not bookmark then
     return 404
@@ -50,6 +63,9 @@ function M.view(page)
 end
 
 function M.delete(page)
+  if access.is_guest() then
+    return page:redirect('user/login')
+  end
   local bookmark = Bookmark:find_by_id(page.GET.id)
   if not bookmark then
     return 404

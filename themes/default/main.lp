@@ -12,7 +12,7 @@
         <summary aria-haspopup="listbox" role="link" class="secondary">ricardogj08</summary>
         <ul role="listbox">
           <li><a>Settings</a></li>
-          <li><a>Logout</a></li>
+          <li><a href="<%= page:make_url('user/logout') %>">Logout</a></li>
         </ul>
       </details>
     </li>

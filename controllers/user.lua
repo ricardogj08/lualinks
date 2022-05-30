@@ -50,6 +50,7 @@ function M.login(page)
   if next(page.POST) then
     access.settings({model = 'user'})
     user:get_post(page.POST)
+    -- Credenciales de acceso.
     auth.status, auth.err = access.login(user.username or '', user.password or '')
     if auth.status then
       return page:redirect('bookmark/index')
@@ -61,12 +62,18 @@ end
 
 --- Cierre de sesión.
 function M.logout(page)
+  if access.is_guest() then
+    return page:redirect('user/login')
+  end
   access.logout()
   page:redirect('user/login')
 end
 
 --- Lista todos los usuarios.
 function M.index(page)
+  if access.is_guest() then
+    return page:redirect('user/login')
+  end
   -- Sistema de búsqueda.
   local search = page.POST.search
   if search then
@@ -101,6 +108,9 @@ end
 
 --- Registra un nuevo usuario.
 function M.create(page)
+  if access.is_guest() then
+    return page:redirect('user/login')
+  end
   local user = User:new()
   local saved
   -- Valida si existe un campo del formulario.
@@ -128,6 +138,9 @@ end
 
 --- Modifica los datos de un usuario.
 function M.update(page)
+  if access.is_guest() then
+    return page:redirect('user/login')
+  end
   local id = page.GET.id
   local user = User:find_by_id(id)
   if not user then
@@ -167,6 +180,9 @@ end
 
 --- Consulta los datos de un usuario.
 function M.view(page)
+  if access.is_guest() then
+    return page:redirect('user/login')
+  end
   local user = User:find_by_id(page.GET.id)
   if user then
     page.title = user.username
@@ -177,6 +193,9 @@ end
 
 --- Elimina un usuario.
 function M.delete(page)
+  if access.is_guest() then
+    return page:redirect('user/login')
+  end
   local user = User:find_by_id(page.GET.id)
   if user then
     user:delete()
