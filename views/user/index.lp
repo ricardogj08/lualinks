@@ -35,6 +35,7 @@
       <% end %>
     </tbody>
   </table>
+
   <% if search == '' then %>
     <a href="<%= page:make_url('user/index', {page = p - 1}) %>" role="button" class="contrast outline">&lt;</a>
     <a href="<%= page:make_url('user/index', {page = p + 1}) %>" role="button">&gt;</a>

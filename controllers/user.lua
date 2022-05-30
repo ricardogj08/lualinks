@@ -56,7 +56,6 @@ function M.login(page)
       return page:redirect('bookmark/index')
     end
   end
-  page.layout = 'login'
   page:render('login', {user = user, auth = auth})
 end
 
