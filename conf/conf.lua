@@ -4,8 +4,8 @@ local conf = {
     -- If defined, default page will be a rendered lp as defined.
     -- Example: 'maintenance' will render /views/maintenance.lp
     default_static = nil,
-    default_controller = 'main',
-    default_action = 'index',
+    default_controller = 'user',
+    default_action = 'login',
     theme  = 'default',
     layout = 'main',
     route_parameter  = 'r',

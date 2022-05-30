@@ -6,6 +6,7 @@ local db = require 'sailor.db'
 
 function M.index(page)
   local bookmarks = Bookmark:find_all()
+  page.title = 'Bookmarks'
   page:render('index', {bookmarks = bookmarks})
 end
 

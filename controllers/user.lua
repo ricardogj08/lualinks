@@ -3,6 +3,7 @@ local User = require 'sailor.model'('user')
 local Role = require 'sailor.model'('role')
 local valua = require 'valua'
 local db = require 'sailor.db'
+local access = require 'sailor.access'
 
 --- Valida todos los campos del formulario.
 -- @param user Instancia actual del modelo user.
@@ -36,6 +37,25 @@ local function roles()
     roles[v.id] = v.description
   end
   return roles
+end
+
+--- Inicio de sesión.
+function M.login(page)
+  local user = User:new()
+  local auth = {}
+  -- Valida si existe un campo del formulario.
+  if next(page.POST) then
+    access.settings({model = 'user'})
+    user:get_post(page.POST)
+    user.username = user.username or ''
+    user.password = user.password or ''
+    auth.status, auth.err = access.login(user.username, user.password)
+    if auth.status then
+      return page:redirect('bookmark/index')
+    end
+  end
+  page.layout = 'login'
+  page:render('login', {user = user, auth = auth})
 end
 
 --- Lista todos los usuarios.
@@ -84,6 +104,8 @@ function M.create(page)
     user.errors = validate(user, page, {
       username = true, role_id = true, password = true
     })
+    -- Cifra la contraseña.
+    user.password = access.hash(user.username, user.password)
     -- Desde el modelo valida todos los campos del formulario
     -- y registra un nuevo usuario.
     saved = not next(user.errors) and user:save()
