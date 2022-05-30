@@ -7,4 +7,3 @@
     <title><%=page.title%></title>
   </head>
   <body>
-  

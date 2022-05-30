@@ -22,7 +22,7 @@
     <input type="password" name="confirm_password" placeholder="Confirm password" minlength="8" maxlength="64" required>
 
     <div class="grid">
-      <input type="submit" value="Register">
+      <input type="submit" value="Register" class="contrast">
       <a href="<%= page:make_url('user/index') %>"><input type="button" class="secondary" value="Cancel"></a>
     </div>
   </form>

@@ -12,18 +12,21 @@ local access = require 'sailor.access'
 -- @return Una tabla de errores por cada campo.
 local function validate(user, page, input)
   local err = {}
+  local val
   if input.username then
-    if User:find_by_attributes({username = user.username}) then
+    val, err.username = valua:new().not_empty().string()(user.username)
+    if val and User:find_by_attributes({username = user.username}) then
       err.username = 'username alredy exists'
     end
   end
   if input.role_id then
-    if not Role:find_by_id(user.role_id) then
+    val, err.role_id = valua:new().not_empty().integer()(user.role_id)
+    if val and not Role:find_by_id(user.role_id) then
       err.role_id = 'Invalid role id'
     end
   end
   if input.password then
-    _, err.password = valua:new().not_empty().string().len(1, 64).
+    val, err.password = valua:new().not_empty().string().len(1, 64).
       no_white().compare(page.POST.confirm_password)(user.password)
   end
   return err
@@ -47,15 +50,19 @@ function M.login(page)
   if next(page.POST) then
     access.settings({model = 'user'})
     user:get_post(page.POST)
-    user.username = user.username or ''
-    user.password = user.password or ''
-    auth.status, auth.err = access.login(user.username, user.password)
+    auth.status, auth.err = access.login(user.username or '', user.password or '')
     if auth.status then
       return page:redirect('bookmark/index')
     end
   end
   page.layout = 'login'
   page:render('login', {user = user, auth = auth})
+end
+
+--- Cierre de sesión.
+function M.logout(page)
+  access.logout()
+  page:redirect('user/login')
 end
 
 --- Lista todos los usuarios.
@@ -104,13 +111,15 @@ function M.create(page)
     user.errors = validate(user, page, {
       username = true, role_id = true, password = true
     })
-    -- Cifra la contraseña.
-    user.password = access.hash(user.username, user.password)
     -- Desde el modelo valida todos los campos del formulario
     -- y registra un nuevo usuario.
-    saved = not next(user.errors) and user:save()
-    if saved then
-      return page:redirect('user/index')
+    if not next(user.errors) then
+      -- Cifra la contraseña.
+      user.password = access.hash(user.username, user.password)
+      saved = user:save()
+      if saved then
+        return page:redirect('user/index')
+      end
     end
   end
   page.title = 'Create user'
