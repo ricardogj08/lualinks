@@ -1,3 +1,7 @@
+/**
+ * https://drive.google.com/file/d/16GmO5sR8LslQifrDpxRBfPA1-NVbitbN/view?usp=sharing
+ */
+
 CREATE DATABASE IF NOT EXISTS lualinks
   CHARACTER SET = 'utf8mb4'
   COLLATE = 'utf8mb4_spanish_ci';
@@ -6,8 +10,8 @@ USE lualinks;
 
 CREATE TABLE IF NOT EXISTS role (
   id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  name VARCHAR(24) NOT NULL,
-  description VARCHAR(256) NOT NULL,
+  name VARCHAR(8) NOT NULL,
+  description VARCHAR(16) NOT NULL,
   CONSTRAINT role_id_pk PRIMARY KEY (id),
   CONSTRAINT role_name_uk UNIQUE (name)
 );

@@ -23,7 +23,7 @@
     <small><%= bookmark.errors.description or '' %></small>
 
     <div class="grid">
-      <input type="submit" value="Save">
+      <input type="submit" value="Save" class="contrast">
       <a href="<%= page:make_url('bookmark/index') %>"><input type="button" class="secondary" value="Cancel"></a>
     </div>
   </form>

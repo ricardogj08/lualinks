@@ -2,6 +2,9 @@
 
 Lua and Sailor bookmark management.
 
+* username: `admin`
+* password: `admin`
+
 ## License
 
     lualinks - Lua and Sailor bookmark management.

@@ -6,7 +6,7 @@
 <section>
   <hgroup>
     <h1>Users</h1>
-    <h2>List all user accounts</h2>
+    <h2>View all user accounts</h2>
   </hgroup>
 
   <form method="post" action="<%= page:make_url('user/index', {search = search}) %>">

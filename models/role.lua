@@ -7,8 +7,8 @@ role.attributes = {
   -- {<attribute> = <validation function, valua required>}
   -- Ex. {id = val:new().integer()}
   { id = val:new().integer().min(1) },
-  { name = val:new().not_empty().string().len(1, 24) },
-  { description = val:new().not_empty().string().len(1, 256) }
+  { name = val:new().not_empty().string().len(1, 8) },
+  { description = val:new().not_empty().string().len(1, 16) }
 }
 
 role.db = {

@@ -11,8 +11,8 @@ local access = require 'sailor.access'
 -- @param input Tabla con todos los campos a validar.
 -- @return Una tabla de errores por cada campo.
 local function validate(user, page, input)
-  local err = {}
   local val
+  local err = {}
   if input.username then
     val, err.username = valua:new().not_empty().string()(user.username)
     if val and User:find_by_attributes({username = user.username}) then
@@ -64,9 +64,6 @@ end
 
 --- Cierre de sesión.
 function M.logout(page)
-  if access.is_guest() then
-    return page:redirect('user/login')
-  end
   access.logout()
   page:redirect('user/login')
 end
@@ -176,7 +173,7 @@ function M.update(page)
     end
   end
   user.password = nil
-  page.title = 'Edit user'
+  page.title = 'Update user'
   page:render('update', {user = user, saved = saved, roles = roles()})
 end
 

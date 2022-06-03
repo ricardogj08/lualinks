@@ -70,7 +70,6 @@ function M.delete(page)
   if not bookmark then
     return 404
   end
-
   if bookmark:delete() then
     page:redirect('bookmark/index')
   end

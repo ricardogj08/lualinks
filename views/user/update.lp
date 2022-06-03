@@ -1,8 +1,8 @@
 <% local form = require 'sailor.form' %>
 <article>
   <hgroup>
-    <h1>Edit user</h1>
-    <h2>Edit user account information</h2>
+    <h1>Update user</h1>
+    <h2>Update user account information</h2>
   </hgroup>
 
   <% if saved == false then %>
