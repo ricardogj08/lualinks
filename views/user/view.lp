@@ -1,3 +1,4 @@
+<% local date = require('date') %>
 <section>
   <hgroup>
     <h1><%= user.username %></h1>
@@ -12,7 +13,7 @@
     <tbody>
       <tr>
         <th scope="row">ID</th>
-        <td><%= user.id %></td>
+        <td>&num;<%= user.id %></td>
       </tr>
       <tr>
         <th scope="row">Username</th>
@@ -24,11 +25,11 @@
       </tr>
       <tr>
         <th scope="row">Created at</th>
-        <td><%= user.created_at %></td>
+        <td><%= date(user.created_at):fmt("${asctime}") %></td>
       </tr>
       <tr>
         <th scope="row">Updated at</th>
-        <td><%= user.updated_at %></td>
+        <td><%= date(user.updated_at):fmt("${asctime}") %></td>
       </tr>
     </tbody>
   </table>

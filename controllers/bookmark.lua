@@ -38,11 +38,12 @@ local function validate_tags(tags)
   return err
 end
 
+--- Lista todos los marcadores.
 function M.index(page)
   if access.is_guest() then
     return page:redirect('user/login')
   end
-  local bookmarks = Bookmark:find_all()
+  local bookmarks = Bookmark:find_all('user_id = '..session.id..' ORDER BY updated_at DESC')
   page.title = 'Bookmarks'
   page:render('index', {bookmarks = bookmarks})
 end
@@ -98,7 +99,7 @@ function M.update(page)
   if access.is_guest() then
     return page:redirect('user/login')
   end
-  local bookmark = Bookmark:find_by_id(page.GET.id)
+  local bookmark = Bookmark:find_by_attributes({id = page.GET.id, user_id = session.id})
   if not bookmark then
     return 404
   end
@@ -113,22 +114,11 @@ function M.update(page)
   page:render('update', {bookmark = bookmark, saved = saved})
 end
 
-function M.view(page)
-  if access.is_guest() then
-    return page:redirect('user/login')
-  end
-  local bookmark = Bookmark:find_by_id(page.GET.id)
-  if not bookmark then
-    return 404
-  end
-  page:render('view', {bookmark = bookmark})
-end
-
 function M.delete(page)
   if access.is_guest() then
     return page:redirect('user/login')
   end
-  local bookmark = Bookmark:find_by_id(page.GET.id)
+  local bookmark = Bookmark:find_by_attributes({id = page.GET.id, user_id = session.id})
   if not bookmark then
     return 404
   end

@@ -25,7 +25,7 @@
             <details role="list" dir="rtl">
               <summary aria-haspopup="listbox" role="link" class="secondary"><%= session.login %></summary>
               <ul role="listbox">
-                <li><a>Settings</a></li>
+                <li><a href="#">Settings</a></li>
                 <li><a href="<%= page:make_url('user/logout') %>">Logout</a></li>
               </ul>
             </details>

@@ -2,6 +2,10 @@
 
 Lua and Sailor bookmark management.
 
+## Dependencies
+
+    sudo luarocks --lua-version 5.1 install date
+
 * username: `admin`
 * password: `admin`
 
