@@ -22,7 +22,7 @@
   </tr>
   <tr>
     <td>description</td>
-    <td><%= bookmark.description %></td>
+    <td><%= bookmark.description or '' %></td>
   </tr>
 </table>
 <br/>

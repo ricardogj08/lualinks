@@ -12,13 +12,13 @@
     <th>title</th>
     <th>description</th>
   </tr>
-  <?lua for k,v in pairs(bookmarks) do ?>
+  <?lua for _, v in pairs(bookmarks) do ?>
   <tr onclick="location.href='<%= page:make_url('bookmark/view', {id = v.id}) %>'">
     <td><%= v.id %></td>
     <td><%= v.user_id %></td>
     <td><%= v.url %></td>
     <td><%= v.title %></td>
-    <td><%= v.description %></td>
+    <td><%= v.description or '' %></td>
   </tr>
   <?lua end ?>
 </table>

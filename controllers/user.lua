@@ -120,11 +120,11 @@ function M.create(page)
     user.errors = validate(user, page, {
       username = true, role_id = true, password = true
     })
-    -- Desde el modelo valida todos los campos del formulario
-    -- y registra un nuevo usuario.
     if not next(user.errors) then
       -- Cifra la contraseña.
       user.password = access.hash(user.username, user.password)
+      -- Desde el modelo valida todos los campos del formulario
+      -- y registra un nuevo usuario.
       saved = user:save()
       if saved then
         return page:redirect('user/index')

@@ -26,7 +26,7 @@
       </tr>
     </thead>
     <tbody>
-      <% for k, v in pairs(users) do %>
+      <% for _, v in pairs(users) do %>
         <tr onclick="location.href='<%= page:make_url('user/view', {id = v.id}) %>'">
           <th scope="row"><%= v.id %></th>
           <td><%= v.username %></td>
