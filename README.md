@@ -9,6 +9,14 @@ Lua and Sailor bookmark management.
 * username: `admin`
 * password: `admin`
 
+## Thanks
+
+* [linkding - Self-hosted bookmark service.](https://github.com/sissbruecker/linkding)
+* [Espial - An Open-source web-based bookmarking server.](https://github.com/jonschoning/espial)
+* [bookmarks - A simple self-hosted bookmarking app that can import bookmarks from delicious and chrome.](https://github.com/dyu/bookmarks)
+* [xBrowserSync - An open-source alternative to browser syncing tools.](https://www.xbrowsersync.org/)
+* [Lobsters - Computing-focused community centered around link aggregation and discussion.](https://github.com/lobsters/lobsters)
+
 ## License
 
     lualinks - Lua and Sailor bookmark management.

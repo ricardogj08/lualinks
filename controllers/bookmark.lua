@@ -43,9 +43,38 @@ function M.index(page)
   if access.is_guest() then
     return page:redirect('user/login')
   end
-  local bookmarks = Bookmark:find_all('user_id = '..session.id..' ORDER BY updated_at DESC')
+  -- Sistema de búsqueda.
+  local search = page.POST.search
+  if search then
+    return page:redirect('bookmark/index', {search = search})
+  end
+  search = page.GET.search or ''
+  -- Sistema de paginación.
+  local p = tonumber(page.GET.page) or 1
+  if p < 1 then
+    if search == '' then
+      return page:redirect('bookmark/index', {page = 1})
+    end
+    return page:redirect('bookmark/index', {search = search, page = 1})
+  end
+  local limit = 15
+  local offset = limit * (p - 1)
+  -- Búsqueda de marcadores.
+  db.connect()
+  local bookmarks = Bookmark:find_all('user_id = '..session.id..
+    " AND (title LIKE '%"..db.escape(search)..
+    "%' OR description LIKE '%"..db.escape(search)..
+    "%') ORDER BY updated_at DESC LIMIT "..limit..' OFFSET '..offset)
+  db.close()
+  -- Sistema de paginación sin resultados.
+  if not next(bookmarks) and p > 1 then
+    if search == '' then
+      return page:redirect('bookmark/index', {page = p - 1})
+    end
+    return page:redirect('bookmark/index', {search = search, page = p - 1})
+  end
   page.title = 'Bookmarks'
-  page:render('index', {bookmarks = bookmarks})
+  page:render('index', {bookmarks = bookmarks, search = search, p = p})
 end
 
 --- Registra un nuevo marcador.
