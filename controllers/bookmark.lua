@@ -124,6 +124,7 @@ function M.create(page)
   page:render('create', {bookmark = bookmark, tag = tag, saved = saved})
 end
 
+--- Modifica un marcador.
 function M.update(page)
   if access.is_guest() then
     return page:redirect('user/login')
@@ -132,17 +133,37 @@ function M.update(page)
   if not bookmark then
     return 404
   end
+  local tag = Tag:new()
   local saved
   if next(page.POST) then
+    -- Elimina campos vacíos.
+    for k, v in pairs(page.POST) do
+      if v == '' then
+        page.POST[k] = nil
+      end
+    end
+    -- Obtiene todos los campos del formulario.
     bookmark:get_post(page.POST)
-    saved = bookmark:update()
+    tag:get_post(page.POST)
+    -- Convierte los tags separados por espacios a un array.
+    local tags = utils.split(tostring(tag.name or ''), "%s")
+    tag.errors = validate_tags(tags)
+    --saved = not next(bookmark.errors) and not next(tag.errors) and bookmark:update()
     if saved then
       page:redirect('bookmark/index')
     end
   end
-  page:render('update', {bookmark = bookmark, saved = saved})
+  -- Convierte un array de tags a un string.
+  tag.name = ''
+  for _, v in ipairs(bookmark.tags) do
+    tag.name = tag.name..' '..v.name
+  end
+  tag.name = tag.name:gsub("^%s+", "")
+  page.title = 'Update bookmark'
+  page:render('update', {bookmark = bookmark, tag = tag, saved = saved})
 end
 
+--- Elimina un marcador.
 function M.delete(page)
   if access.is_guest() then
     return page:redirect('user/login')
