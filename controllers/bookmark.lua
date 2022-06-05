@@ -6,9 +6,6 @@ local valua = require 'valua'
 local db = require 'sailor.db'
 local utils = require 'web_utils.utils'
 local access = require 'sailor.access'
-local session = require 'sailor.session'
-session.open(require 'sailor'.r)
-session = session.data
 
 --- Valida si una URL es permitida.
 -- @param model Instancia actual del modelo bookmark.
@@ -61,7 +58,7 @@ function M.index(page)
   local offset = limit * (p - 1)
   -- Búsqueda de marcadores.
   db.connect()
-  local bookmarks = Bookmark:find_all('user_id = '..session.id..
+  local bookmarks = Bookmark:find_all('user_id = '..access.data.id..
     " AND (title LIKE '%"..db.escape(search)..
     "%' OR description LIKE '%"..db.escape(search)..
     "%') ORDER BY updated_at DESC LIMIT "..limit..' OFFSET '..offset)
@@ -91,7 +88,7 @@ function M.create(page)
     bookmark:get_post(page.POST)
     tag:get_post(page.POST)
     -- Valida todos los campos del formulario.
-    bookmark.user_id = session.id
+    bookmark.user_id = access.data.id
     bookmark.errors = validate_bookmark(bookmark)
     -- Convierte los tags separados por espacios a un array.
     local tags = utils.split(tostring(tag.name or ''), "%s")
@@ -101,12 +98,12 @@ function M.create(page)
     saved = not next(bookmark.errors) and not next(tag.errors) and bookmark:save()
     if saved then
       for _, v in ipairs(tags) do
-        tag = tag:find_by_attributes({name = v, user_id = session.id})
+        tag = tag:find_by_attributes({name = v, user_id = access.data.id})
         -- Registra un nuevo tag si no existe.
         if not tag then
           tag = Tag:new()
           tag.name = v
-          tag.user_id = session.id
+          tag.user_id = access.data.id
           tag:save()
         end
         -- Asocia un tag al marcador.
@@ -129,7 +126,7 @@ function M.update(page)
   if access.is_guest() then
     return page:redirect('user/login')
   end
-  local bookmark = Bookmark:find_by_attributes({id = page.GET.id, user_id = session.id})
+  local bookmark = Bookmark:find_by_attributes({id = page.GET.id, user_id = access.data.id})
   if not bookmark then
     return 404
   end
@@ -168,7 +165,7 @@ function M.delete(page)
   if access.is_guest() then
     return page:redirect('user/login')
   end
-  local bookmark = Bookmark:find_by_attributes({id = page.GET.id, user_id = session.id})
+  local bookmark = Bookmark:find_by_attributes({id = page.GET.id, user_id = access.data.id})
   if not bookmark then
     return 404
   end
