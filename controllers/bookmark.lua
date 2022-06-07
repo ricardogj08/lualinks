@@ -9,13 +9,19 @@ local access = require 'sailor.access'
 
 --- Valida si una URL es permitida.
 -- @param model Instancia actual del modelo bookmark.
--- @return Una tabla de errores.
-local function validate_bookmark(bookmark)
+-- @param input Tabla con todos los campos a validar.
+-- @return Una tabla de errores por cada campo.
+local function validate_bookmark(bookmark, input)
   local val
   local err = {}
-  val, err.url = valua:new().not_empty().string()(bookmark.url)
-  if val and Bookmark:find_by_attributes({user_id = bookmark.user_id, url = bookmark.url}) then
-    err.url = 'url alredy exists'
+  if input.url then
+    val, err.url = valua:new().not_empty().string()(bookmark.url)
+    if val and Bookmark:find_by_attributes({user_id = bookmark.user_id, url = bookmark.url}) then
+      err.url = 'url alredy exists'
+    end
+  end
+  if input.title then
+    val, err.title = valua:new().not_empty().string()(bookmark.title)
   end
   return err
 end
@@ -89,7 +95,7 @@ function M.create(page)
     tag:get_post(page.POST)
     -- Valida todos los campos del formulario.
     bookmark.user_id = access.data.id
-    bookmark.errors = validate_bookmark(bookmark)
+    bookmark.errors = validate_bookmark(bookmark, {url = true})
     -- Convierte los tags separados por espacios a un array.
     local tags = utils.split(tostring(tag.name or ''), "%s")
     tag.errors = validate_tags(tags)
@@ -126,28 +132,33 @@ function M.update(page)
   if access.is_guest() then
     return page:redirect('user/login')
   end
-  local bookmark = Bookmark:find_by_attributes({id = page.GET.id, user_id = access.data.id})
+  local id = page.GET.id
+  local bookmark = Bookmark:find_by_attributes({id = id, user_id = access.data.id})
   if not bookmark then
     return 404
   end
   local tag = Tag:new()
   local saved
   if next(page.POST) then
-    -- Elimina campos vacíos.
-    for k, v in pairs(page.POST) do
-      if v == '' then
-        page.POST[k] = nil
-      end
-    end
     -- Obtiene todos los campos del formulario.
     bookmark:get_post(page.POST)
     tag:get_post(page.POST)
+    local b = Bookmark:find_by_id(id)
+     -- Valida solo los campos modificados.
+    local input = {
+      url = bookmark.url ~= b.url,
+      title = bookmark.title ~= b.title
+    }
+    -- Valida todos los campos del formulario.
+    bookmark.errors = validate_bookmark(bookmark, input)
     -- Convierte los tags separados por espacios a un array.
     local tags = utils.split(tostring(tag.name or ''), "%s")
     tag.errors = validate_tags(tags)
-    --saved = not next(bookmark.errors) and not next(tag.errors) and bookmark:update()
+    -- Desde el modelo valida todos los campos del formulario
+    -- y modifica los datos de un marcador.
+    saved = not next(bookmark.errors) and not next(tag.errors) and bookmark:update()
     if saved then
-      page:redirect('bookmark/index')
+      return page:redirect('bookmark/update', {id = id})
     end
   end
   -- Convierte un array de tags a un string.
