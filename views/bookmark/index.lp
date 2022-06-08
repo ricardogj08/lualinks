@@ -14,7 +14,7 @@
   </p>
 
   <div>
-    <% for _, b in ipairs(bookmarks) do %>
+    <% for _,b in ipairs(bookmarks) do %>
       <div>
         <hr>
         <div>
@@ -25,7 +25,7 @@
         </div>
         <div><%= b.description or '' %></div>
         <div>
-          <% for _, t in ipairs(b.tags) do %>
+          <% for _,t in ipairs(b.tags) do %>
             <a href="<%= page:make_url('tag/view', {id = t.id}) %>">#<%= t.name %></a>
           <% end %>
         </div>

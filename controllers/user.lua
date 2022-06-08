@@ -6,27 +6,26 @@ local db = require 'sailor.db'
 local access = require 'sailor.access'
 
 --- Valida todos los campos del formulario.
--- @param user Instancia actual del modelo user.
--- @param page Objecto page del controlador.
--- @param input Tabla con todos los campos a validar.
+-- @user Es una instancia del modelo user.
+-- @page Objeto page del controlador.
+-- @input Es una tabla con todos los campos a validar.
 -- @return Una tabla de errores por cada campo.
-local function validate(user, page, input)
-  local val
-  local err = {}
+local function validate(user,page,input)
+  local err,val = {}
   if input.username then
-    val, err.username = valua:new().not_empty().string()(user.username)
+    val,err.username = valua:new().not_empty().string()(user.username)
     if val and User:find_by_attributes({username = user.username}) then
       err.username = 'username alredy exists'
     end
   end
   if input.role_id then
-    val, err.role_id = valua:new().not_empty().integer()(user.role_id)
+    val,err.role_id = valua:new().not_empty().integer()(user.role_id)
     if val and not Role:find_by_id(user.role_id) then
       err.role_id = 'Invalid role id'
     end
   end
   if input.password then
-    val, err.password = valua:new().not_empty().string().len(1, 64).
+    val,err.password = valua:new().not_empty().string().len(1, 64).
       no_white().compare(page.POST.confirm_password)(user.password)
   end
   return err
@@ -36,7 +35,7 @@ end
 -- @return Un array de strings.
 local function roles()
   local roles = {}
-  for _, v in ipairs(Role:find_all()) do
+  for _,v in ipairs(Role:find_all()) do
     roles[v.id] = v.description
   end
   return roles
@@ -47,14 +46,13 @@ function M.login(page)
   if not access.is_guest() then
     return page:redirect('bookmark/index')
   end
-  local user = User:new()
-  local auth = {}
+  local user,auth = User:new(),{}
   -- Valida si existe un campo del formulario.
   if next(page.POST) then
     access.settings({model = 'user'})
     user:get_post(page.POST)
     -- Credenciales de acceso.
-    auth.status, auth.err = access.login(user.username or '', user.password or '')
+    auth.status,auth.err = access.login(user.username or '', user.password or '')
     if auth.status then
       return page:redirect('bookmark/index')
     end
@@ -149,7 +147,7 @@ function M.update(page)
   -- Valida si existe un campo del formulario.
   if next(page.POST) then
     -- Elimina campos vacíos.
-    for k, v in pairs(page.POST) do
+    for k,v in pairs(page.POST) do
       if v == '' then
         page.POST[k] = nil
       end
@@ -159,7 +157,7 @@ function M.update(page)
     local u = User:find_by_id(id)
     local input = {}
     -- Valida solo los campos modificados.
-    for k, v in pairs(user) do
+    for k,v in pairs(user) do
       if u[k] ~= v then
         input[k] = true
       end
