@@ -22,7 +22,7 @@
             <details role="list" dir="rtl">
               <summary aria-haspopup="listbox" role="link" class="secondary"><%= access.data.login %></summary>
               <ul role="listbox">
-                <li><a href="#">Settings</a></li>
+                <li><a href="<%= page:make_url('settings/view') %>">Settings</a></li>
                 <li><a href="<%= page:make_url('user/logout') %>">Logout</a></li>
               </ul>
             </details>
