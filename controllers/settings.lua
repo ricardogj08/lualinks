@@ -16,9 +16,12 @@ local function validate(user,page,input)
       err.username = 'username alredy exists'
     end
   end
-  if input.password then
+  if input.password or input.username then
     val,err.password = valua:new().not_empty().string().len(1, 64).
       no_white().compare(page.POST.confirm_password)(user.password)
+    if err.password and input.username then
+      err.password = 'Please confirm o set a new password'
+    end
   end
   return err
 end

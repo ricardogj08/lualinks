@@ -24,7 +24,7 @@ local function validate(user,page,input)
       err.role_id = 'Invalid role id'
     end
   end
-  if input.password then
+  if input.password or input.username then
     val,err.password = valua:new().not_empty().string().len(1, 64).
       no_white().compare(page.POST.confirm_password)(user.password)
   end
@@ -164,14 +164,16 @@ function M.update(page)
     end
     user.errors = validate(user, page, input)
     -- Cifra la contraseña.
-    if input.password and not user.errors.password and
-      not user.errors.username
-    then
+    if user.errors.password and input.username then
+      user.errors.password = 'Please confirm o set a new password'
+    end
+    saved = not next(user.errors)
+    if input.password and saved then
       user.password = access.hash(user.username, user.password)
     end
     -- Desde el modelo valida todos los campos del formulario
     -- y modifica los datos de un usuario.
-    saved = not next(user.errors) and user:update()
+    saved = saved and user:update()
     if saved then
       return page:redirect('user/update', {id = id})
     end
