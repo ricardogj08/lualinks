@@ -163,6 +163,12 @@ function M.update(page)
       end
     end
     user.errors = validate(user, page, input)
+    -- Cifra la contraseña.
+    if input.password and not user.errors.password and
+      not user.errors.username
+    then
+      user.password = access.hash(user.username, user.password)
+    end
     -- Desde el modelo valida todos los campos del formulario
     -- y modifica los datos de un usuario.
     saved = not next(user.errors) and user:update()
