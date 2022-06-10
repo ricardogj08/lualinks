@@ -1,22 +1,23 @@
-<?lua local form = require "sailor.form" ?>
-<h2>Update tag</h2>
-<?lua if saved == false then ?>
-There was an error while saving.
-<?lua end ?>
-<form method="post">
-  <div class="form-group">
-    <label>id:</label>
-    <%= form.text(tag,'id', 'class="form-control" placeholder="id"') %>
-  </div>
-  <div class="form-group">
-    <label>name:</label>
-    <%= form.text(tag,'name', 'class="form-control" placeholder="name"') %>
-  </div>
-  <div class="form-group">
-    <label>user_id:</label>
-    <%= form.text(tag,'user_id', 'class="form-control" placeholder="user_id"') %>
-  </div>
-  <input type="submit" class="btn btn-primary"/>
-</form>
-<br/>
-<a href="<%= page:make_url('tag/index') %>"><- Back to View All</a>
+<% local form = require 'sailor.form' %>
+<article>
+  <hgroup>
+    <h1>Update tag</h1>
+    <h2>Update tag name</h2>
+  </hgroup>
+
+  <% if saved == false then %>
+    <small>The tag name was not changed.</small>
+  <% end %>
+
+  <form method="post">
+    <%= form.text(tag, 'name', 'placeholder="Name" maxlength="64" required') %>
+    <small><%= tag.errors.name or '' %></small>
+
+    <div class="grid">
+      <input type="submit" value="Save" class="contrast">
+      <a href="<%= page:make_url('tag/view', {id = tag.id}) %>"><input type="button" class="secondary" value="Cancel"></a>
+    </div>
+  </form>
+
+  <a href="<%= page:make_url('tag/delete', {id = tag.id}) %>" class="secondary"><small>Delete tag</small></a>
+</article>

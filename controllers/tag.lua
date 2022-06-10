@@ -1,5 +1,6 @@
 local M = {}
 local Tag = require 'sailor.model'('tag')
+local valua = require 'valua'
 local db = require 'sailor.db'
 local access = require 'sailor.access'
 
@@ -36,11 +37,26 @@ function M.update(page)
     return 404
   end
   local saved
+  -- Valida si existe un campo del formulario.
   if next(page.POST) then
+    -- Obtiene todos los campos del formulario.
     tag:get_post(page.POST)
-    saved = tag:update()
+    tag.user_id = access.data.id
+    local val
+    val,tag.errors.name = valua:new().not_empty().string().
+      len(1, 64).no_white()(tag.name)
+    -- Valida si el nombre del tag es único.
+    if val and Tag:find_by_attributes({
+      user_id = access.data.id, name = tag.name
+    })
+    then
+      tag.errors.name = 'tag name alredy exists'
+    end
+    -- Desde el modelo valida todos los campos del formulario
+    -- y modifica los datos del marcador.
+    saved = not next(tag.errors) and tag:update()
     if saved then
-      page:redirect('tag/index')
+      return page:redirect('tag/update', {id = tag.id})
     end
   end
   page:render('update', {tag = tag, saved = saved})
@@ -71,7 +87,7 @@ function M.delete(page)
   })
   if tag then
     tag:delete()
-    page:redirect('tag/index')
+    return page:redirect('tag/index')
   end
   return 404
 end
