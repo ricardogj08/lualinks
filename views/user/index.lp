@@ -10,7 +10,7 @@
   </hgroup>
 
   <form method="post" action="<%= page:make_url('user/index', {search = search}) %>">
-    <input type="search" name="search" placeholder="Search" value="<%= search %>" autofocus>
+    <input type="search" name="search" placeholder="Search" value="<%= search %>" maxlength="64" autofocus>
   </form>
 
   <p>
