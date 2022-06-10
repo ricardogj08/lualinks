@@ -24,8 +24,14 @@ function M.index(page)
   page:render('index', {tags = tags, search = search})
 end
 
+--- Modifica el nombre de un marcador.
 function M.update(page)
-  local tag = Tag:find_by_id(page.GET.id)
+  if access.is_guest() then
+    return page:redirect('user/login')
+  end
+  local tag = Tag:find_by_attributes({
+    id = page.GET.id, user_id = access.data.id
+  })
   if not tag then
     return 404
   end
@@ -40,22 +46,34 @@ function M.update(page)
   page:render('update', {tag = tag, saved = saved})
 end
 
+--- Consulta los marcadores de un tag.
 function M.view(page)
-  local tag = Tag:find_by_id(page.GET.id)
-  if not tag then
-    return 404
+  if access.is_guest() then
+    return page:redirect('user/login')
   end
-  page:render('view', {tag = tag})
+  local tag = Tag:find_by_attributes({
+    id = page.GET.id, user_id = access.data.id
+  })
+  if tag then
+    page.title = tag.name
+    return page:render('view', {tag = tag})
+  end
+  return 404
 end
 
+--- Elimina un tag.
 function M.delete(page)
-  local tag = Tag:find_by_id(page.GET.id)
-  if not tag then
-    return 404
+  if access.is_guest() then
+    return page:redirect('user/login')
   end
-  if tag:delete() then
+  local tag = Tag:find_by_attributes({
+    id = page.GET.id, user_id = access.data.id
+  })
+  if tag then
+    tag:delete()
     page:redirect('tag/index')
   end
+  return 404
 end
 
 return M
