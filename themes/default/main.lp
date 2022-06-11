@@ -1,3 +1,4 @@
+<% local app_name = require('conf.conf').sailor.app_name %>
 <% local access = require 'sailor.access' %>
 <% local User = require 'sailor.model'('user') %>
 <!doctype html>
@@ -13,7 +14,7 @@
     <% if not access.is_guest() then %>
       <nav class="container-fluid">
         <ul>
-          <li><a href="<%= page:make_url('bookmark/index') %>" class="contrast"><strong>lualinks</strong></a></li>
+          <li><a href="<%= page:make_url('bookmark/index') %>" class="contrast"><strong><%= app_name %></strong></a></li>
         </ul>
         <ul>
           <li><a href="<%= page:make_url('bookmark/index') %>" class="contrast">Bookmarks</a></li>
@@ -44,7 +45,7 @@
       <p>
         <small>
           Copyright &copy; <%= os.date('%Y') %>
-          <a href="https://github.com/ricardogj08/lualinks" target="_blank" class="secondary">lualinks</a> by
+          <a href="https://github.com/ricardogj08/lualinks" target="_blank" class="secondary"><%= app_name %></a> by
           <a href="https://github.com/ricardogj08" target="_blank" class="secondary">Ricardo García Jiménez</a>.
           &#9889; Powered by &#127959; <a href="https://picocss.com/" target="_blank" class="secondary">pico.css</a>,
           &#127769; <a href="https://github.com/sailorproject/sailor" target="_blank" class="secondary">Sailor MVC</a> and

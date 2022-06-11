@@ -1,6 +1,7 @@
 local M = {}
 local User = require 'sailor.model'('user')
 local Role = require 'sailor.model'('role')
+local app_url = require('conf.conf').sailor.app_url
 local valua = require 'valua'
 local db = require 'sailor.db'
 local access = require 'sailor.access'
@@ -49,6 +50,7 @@ end
 
 --- Inicio de sesión.
 function M.login(page)
+  page:enable_cors({allow_origin = app_url})
   if not access.is_guest() then
     return page:redirect('bookmark/index')
   end
@@ -68,12 +70,14 @@ end
 
 --- Cierre de sesión.
 function M.logout(page)
+  page:enable_cors({allow_origin = app_url})
   access.logout()
   page:redirect('user/login')
 end
 
 --- Lista todos los usuarios.
 function M.index(page)
+  page:enable_cors({allow_origin = app_url})
   if access.is_guest() then
     return page:redirect('user/login')
   end
@@ -114,6 +118,7 @@ end
 
 --- Registra un nuevo usuario.
 function M.create(page)
+  page:enable_cors({allow_origin = app_url})
   if access.is_guest() then
     return page:redirect('user/login')
   end
@@ -147,6 +152,7 @@ end
 
 --- Modifica los datos de un usuario.
 function M.update(page)
+  page:enable_cors({allow_origin = app_url})
   if access.is_guest() then
     return page:redirect('user/login')
   end
@@ -200,6 +206,7 @@ end
 
 --- Consulta los datos de un usuario.
 function M.view(page)
+  page:enable_cors({allow_origin = app_url})
   if access.is_guest() then
     return page:redirect('user/login')
   end
@@ -216,6 +223,7 @@ end
 
 --- Elimina un usuario.
 function M.delete(page)
+  page:enable_cors({allow_origin = app_url})
   if access.is_guest() then
     return page:redirect('user/login')
   end

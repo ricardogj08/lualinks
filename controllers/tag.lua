@@ -1,11 +1,13 @@
 local M = {}
 local Tag = require 'sailor.model'('tag')
+local app_url = require('conf.conf').sailor.app_url
 local valua = require 'valua'
 local db = require 'sailor.db'
 local access = require 'sailor.access'
 
 --- Lista todos los tags.
 function M.index(page)
+  page:enable_cors({allow_origin = app_url})
   if access.is_guest() then
     return page:redirect('user/login')
   end
@@ -27,6 +29,7 @@ end
 
 --- Modifica el nombre de un marcador.
 function M.update(page)
+  page:enable_cors({allow_origin = app_url})
   if access.is_guest() then
     return page:redirect('user/login')
   end
@@ -64,6 +67,7 @@ end
 
 --- Consulta los marcadores de un tag.
 function M.view(page)
+  page:enable_cors({allow_origin = app_url})
   if access.is_guest() then
     return page:redirect('user/login')
   end
@@ -79,6 +83,7 @@ end
 
 --- Elimina un tag.
 function M.delete(page)
+  page:enable_cors({allow_origin = app_url})
   if access.is_guest() then
     return page:redirect('user/login')
   end

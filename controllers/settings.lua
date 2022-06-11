@@ -1,5 +1,6 @@
 local M = {}
 local User = require 'sailor.model'('user')
+local app_url = require('conf.conf').sailor.app_url
 local valua = require 'valua'
 local access = require 'sailor.access'
 
@@ -28,6 +29,7 @@ end
 
 --- Consulta los datos de perfil de un usuario de sesión.
 function M.view(page)
+  page:enable_cors({allow_origin = app_url})
   if access.is_guest() then
     return page:redirect('user/login')
   end
@@ -69,6 +71,7 @@ end
 
 --- Elimina la cuenta de un usuario de sesión. 
 function M.delete(page)
+  page:enable_cors({allow_origin = app_url})
   if access.is_guest() then
     return page:redirect('user/login')
   end

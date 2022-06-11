@@ -2,6 +2,7 @@ local M = {}
 local Bookmark = require 'sailor.model'('bookmark')
 local Tag = require 'sailor.model'('tag')
 local BookmarkTag = require 'sailor.model'('bookmark_tag')
+local app_url = require('conf.conf').sailor.app_url
 local valua = require 'valua'
 local db = require 'sailor.db'
 local utils = require 'web_utils.utils'
@@ -45,6 +46,7 @@ end
 
 --- Lista todos los marcadores.
 function M.index(page)
+  page:enable_cors({allow_origin = app_url})
   if access.is_guest() then
     return page:redirect('user/login')
   end
@@ -84,6 +86,7 @@ end
 
 --- Registra un nuevo marcador.
 function M.create(page)
+  page:enable_cors({allow_origin = app_url})
   if access.is_guest() then
     return page:redirect('user/login')
   end
@@ -127,6 +130,7 @@ end
 
 --- Modifica un marcador.
 function M.update(page)
+  page:enable_cors({allow_origin = app_url})
   if access.is_guest() then
     return page:redirect('user/login')
   end
@@ -203,6 +207,7 @@ end
 
 --- Elimina un marcador.
 function M.delete(page)
+  page:enable_cors({allow_origin = app_url})
   if access.is_guest() then
     return page:redirect('user/login')
   end

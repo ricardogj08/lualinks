@@ -1,6 +1,7 @@
 local conf = {
   sailor = {
     app_name = 'lualinks',
+    app_url = 'http://localhost:8080',
     -- If defined, default page will be a rendered lp as defined.
     -- Example: 'maintenance' will render /views/maintenance.lp
     default_static = nil,
