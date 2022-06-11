@@ -1,4 +1,5 @@
 <% local access = require 'sailor.access' %>
+<% local User = require 'sailor.model'('user') %>
 <!doctype html>
 <html lang="es">
   <head>
@@ -17,7 +18,10 @@
         <ul>
           <li><a href="<%= page:make_url('bookmark/index') %>" class="contrast">Bookmarks</a></li>
           <li><a href="<%= page:make_url('tag/index') %>" class="contrast">Tags</a></li>
-          <li><a href="<%= page:make_url('user/index') %>" class="contrast">Users</a></li>
+          <% local user = User:find_by_id(access.data.id) %>
+          <% if user.role.name == 'admin' then %>
+            <li><a href="<%= page:make_url('user/index') %>" class="contrast">Users</a></li>
+          <% end %>
           <li>
             <details role="list" dir="rtl">
               <summary aria-haspopup="listbox" role="link" class="secondary"><%= access.data.login %></summary>

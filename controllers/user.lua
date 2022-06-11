@@ -5,6 +5,12 @@ local valua = require 'valua'
 local db = require 'sailor.db'
 local access = require 'sailor.access'
 
+--- Valida si el usuario de sesión es administrador.
+local function is_admin(id)
+  local user = User:find_by_id(id)
+  return user.role.name == 'admin'
+end
+
 --- Valida todos los campos del formulario.
 -- @user Es una instancia del modelo user.
 -- @page Objeto page del controlador.
@@ -71,6 +77,9 @@ function M.index(page)
   if access.is_guest() then
     return page:redirect('user/login')
   end
+  if not is_admin(access.data.id) then
+    return 404
+  end
   -- Sistema de búsqueda.
   local search = page.POST.search
   if search then
@@ -108,6 +117,9 @@ function M.create(page)
   if access.is_guest() then
     return page:redirect('user/login')
   end
+  if not is_admin(access.data.id) then
+    return 404
+  end
   local user = User:new()
   local saved
   -- Valida si existe un campo del formulario.
@@ -137,6 +149,9 @@ end
 function M.update(page)
   if access.is_guest() then
     return page:redirect('user/login')
+  end
+  if not is_admin(access.data.id) then
+    return 404
   end
   local id = page.GET.id
   local user = User:find_by_id(id)
@@ -188,6 +203,9 @@ function M.view(page)
   if access.is_guest() then
     return page:redirect('user/login')
   end
+  if not is_admin(access.data.id) then
+    return 404
+  end
   local user = User:find_by_id(page.GET.id)
   if user then
     page.title = user.username
@@ -200,6 +218,9 @@ end
 function M.delete(page)
   if access.is_guest() then
     return page:redirect('user/login')
+  end
+  if not is_admin(access.data.id) then
+    return 404
   end
   local user = User:find_by_id(page.GET.id)
   if user then
