@@ -6,7 +6,7 @@
   </hgroup>
 
   <% if auth.status == false then %>
-    <small><%= auth.err %></small>
+    <p><small><%= auth.err %></small></p>
   <% end %>
 
   <form method="post">

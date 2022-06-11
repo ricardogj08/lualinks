@@ -4,9 +4,7 @@
     <h2>View all tags</h2>
   </hgroup>
 
-  <form method="post" action="<%= page:make_url('tag/index', {search = search}) %>">
-    <input type="search" name="search" placeholder="Search" value="<%= search %>" maxlength="64" autofocus>
-  </form>
+  <% page:include('/views/incs/search', {controller = 'tag', search = search, maxlength = 64}) %>
 
   <p>
     <% for _,v in ipairs(tags) do %>

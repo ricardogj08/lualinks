@@ -9,9 +9,7 @@
     <h2>View all user accounts</h2>
   </hgroup>
 
-  <form method="post" action="<%= page:make_url('user/index', {search = search}) %>">
-    <input type="search" name="search" placeholder="Search" value="<%= search %>" maxlength="64" autofocus>
-  </form>
+  <% page:include('/views/incs/search', {controller = 'user', search = search, maxlength = 64}) %>
 
   <p>
     <a href="<%= page:make_url('user/create') %>" role="button">&plus; Create user</a>
@@ -36,11 +34,5 @@
     </tbody>
   </table>
 
-  <% if search == '' then %>
-    <a href="<%= page:make_url('user/index', {page = p - 1}) %>" role="button" class="contrast outline">&lt;</a>
-    <a href="<%= page:make_url('user/index', {page = p + 1}) %>" role="button">&gt;</a>
-  <% else %>
-    <a href="<%= page:make_url('user/index', {page = p - 1, search = search}) %>" role="button" class="contrast outline">&lt;</a>
-    <a href="<%= page:make_url('user/index', {page = p + 1, search = search}) %>" role="button">&gt;</a>
-  <% end %>
+  <% page:include('/views/incs/pagination', {controller = 'user', search = search, p = p}) %>
 </section>

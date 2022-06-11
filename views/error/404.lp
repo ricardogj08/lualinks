@@ -1,3 +1,6 @@
-Error 404: Page not found.
-<br/>
-You can customize this page under <code>/views/error/404.lp</code>
+<section>
+  <hgroup>
+    <h1>Error 404</h1>
+    <h2>Page not found</h2>
+  </hgroup>
+</section>
