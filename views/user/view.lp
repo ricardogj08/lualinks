@@ -35,7 +35,20 @@
   </table>
 
   <p>
-    <a href="<%= page:make_url('user/delete', {id = user.id}) %>" role="button" class="contrast">Delete</a>
+    <!-- Button to trigger the modal -->
+    <a href="#" role="button" class="contrast" data-target="modal" onClick="toggleModal(event)"><small>Delete</small></a>
     <a href="<%= page:make_url('user/update', {id = user.id}) %>" role="button" class="secondary">Update</a>
+    <!-- Modal -->
+    <dialog id="modal">
+      <article>
+        <a href="#close" aria-label="Close" class="close" data-target="modal" onClick="toggleModal(event)"></a>
+        <h3>Confirm your action!</h3>
+        <p>Are you sure you want to delete this user?</p>
+        <footer>
+          <a href="<%= page:make_url('user/delete', {id = user.id}) %>" role="button">Confirm</a>
+          <a href="#cancel" role="button" class="secondary" data-target="modal" onClick="toggleModal(event)">Cancel</a>
+        </footer>
+      </article>
+    </dialog>
   </p>
 </section>

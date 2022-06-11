@@ -29,6 +29,6 @@
       <a href="<%= page:make_url('bookmark/index') %>"><input type="button" class="secondary" value="Cancel"></a>
     </div>
 
-    <a href="<%= page:make_url('settings/delete') %>" class="secondary"><small>Delete my account</small></a>
+    <% page:include('/views/incs/modal', {title = 'Delete my account', msg = 'Are you sure you want to delete your account?', route = page:make_url('settings/delete')}) %>
   </form>
 </article>

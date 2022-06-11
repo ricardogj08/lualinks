@@ -8,5 +8,5 @@
     <p><small>There was an error while saving.</small></p>
   <% end %>
 
-  <% page:include('/views/user/form', {user = user}) %>
+  <% page:include('/views/user/form', {user = user, roles = roles}) %>
 </article>

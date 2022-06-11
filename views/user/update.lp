@@ -8,5 +8,5 @@
     <p><small>The user data was not changed.</small></p>
   <% end %>
 
-  <% page:include('/views/user/form', {user = user}) %>
+  <% page:include('/views/user/form', {user = user, roles = roles}) %>
 </article>

@@ -20,6 +20,6 @@
       <a href="<%= page:make_url('tag/view', {id = tag.id}) %>"><input type="button" class="secondary" value="Cancel"></a>
     </div>
 
-    <a href="<%= page:make_url('tag/delete', {id = tag.id}) %>"  class="secondary"><small>Delete tag</small></a>
+    <% page:include('/views/incs/modal', {title = 'Delete this tag', msg = 'Are you sure you want to delete this tag?', route = page:make_url('tag/delete', {id = tag.id})}) %>
   </form>
 </section>

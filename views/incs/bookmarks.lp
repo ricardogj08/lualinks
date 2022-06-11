@@ -17,7 +17,7 @@
     </div>
     <div>
       <small>&#128197; <%= date(b.updated_at):fmt("%d %b %Y") %></small> &vert;
-      <a href="<%= page:make_url('bookmark/delete', {id = b.id}) %>" class="contrast"><small>Delete</small></a>
+      <% page:include('/views/incs/modal', {title = 'Delete', class = 'contrast', msg = 'Are you sure you want to delete this bookmark?', route = page:make_url('bookmark/delete', {id = b.id})}) %>
       <a href="<%= page:make_url('bookmark/update', {id = b.id}) %>" class="secondary"><small>Update</small></a>
     </div>
   </div>
