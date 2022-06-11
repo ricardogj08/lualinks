@@ -4,7 +4,44 @@ Lua and Sailor bookmark management.
 
 ## Dependencies
 
-    sudo luarocks --lua-version 5.1 install date
+* [Lua >= 5.1, < 5.4](https://www.lua.org/home.html)
+* [LuaRocks](https://luarocks.org/)
+* [MariaDB >= 10.6.8](https://mariadb.org/)
+
+[Valua](https://github.com/sailorproject/valua) (Validation for Lua):
+
+    git clone https://github.com/sailorproject/valua.git
+    cd valua
+    sudo luarocks make
+
+[Sailor](https://github.com/sailorproject/sailor) (A Lua MVC Web Framework):
+
+    git clone https://github.com/sailorproject/sailor.git
+    cd sailor
+    sudo luarocks make
+
+[LuaSQL](https://github.com/keplerproject/luasql) with MySQL driver (A simple interface from Lua to a DBMS):
+
+    luarocks install luasql-mysql
+
+[LuaDate v2.2](https://github.com/Tieske/date) (Lua Date and Time module for Lua 5.x):
+
+    sudo luarocks install date
+
+## Installation
+
+    git clone https://github.com/ricardogj08/lualinks.git
+    cd lualinks
+
+1. Create the lualinks database in MariaDB with the `db/db.sql` script.
+2. Modify the lualinks database access credentials in `conf/conf.lua`.
+
+## Run
+
+    cd lualinks
+    sailor s
+
+<http://localhost:8080>
 
 * username: `admin`
 * password: `admin`
