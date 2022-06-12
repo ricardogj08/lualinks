@@ -1,8 +1,7 @@
-local getenv = os.getenv
 local conf = {
   sailor = {
-    app_name = getenv('APP_NAME') or 'lualinks',
-    app_url = getenv('APP_URL') or 'http://localhost:8080',
+    app_name = 'lualinks',
+    app_url = 'http://localhost:8080',
     -- If defined, default page will be a rendered lp as defined.
     -- Example: 'maintenance' will render /views/maintenance.lp
     default_static = nil,
@@ -17,9 +16,9 @@ local conf = {
     friendly_urls  = true,
     max_upload = 1024 * 1024,
     -- this will use db configuration named development
-    environment = getenv('APP_ENV') or 'development',
+    environment = 'development',
     -- false recommended for development, true recommended for production
-    hide_stack_trace = not getenv('APP_DEBUG')
+    hide_stack_trace = false
   },
 
   db = {
@@ -30,13 +29,6 @@ local conf = {
       user = 'root',
       pass = 'root',
       dbname = 'lualinks'
-    },
-    production = {
-      driver = getenv('DB_CONNECTION') or 'postgres',
-      host = getenv('DB_HOST') or '127.0.0.1',
-      user = getenv('DB_USERNAME') or 'root',
-      pass = getenv('DB_PASSWORD') or 'root',
-      dbname = getenv('DB_DATABASE') or 'lualinks'
     }
   },
 
@@ -53,7 +45,7 @@ local conf = {
   },
 
   debug = {
-    inspect = getenv('APP_DEBUG') or false
+    inspect = true
   }
 }
 

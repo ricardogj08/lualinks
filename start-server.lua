@@ -72,7 +72,7 @@ local simplerules = {
 }
 
 xavante.HTTP{
-  server = {host = "*", port = tonumber(os.getenv('PORT')) or 8080},
+  server = {host = "*", port = 8080},
 
   defaultHost = {
     rules = simplerules

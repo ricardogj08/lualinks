@@ -1,1 +1,0 @@
-web: sailor s
