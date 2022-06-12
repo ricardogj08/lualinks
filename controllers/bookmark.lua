@@ -2,10 +2,11 @@ local M = {}
 local Bookmark = require 'sailor.model'('bookmark')
 local Tag = require 'sailor.model'('tag')
 local BookmarkTag = require 'sailor.model'('bookmark_tag')
-local app_url = require('conf.conf').sailor.app_url
+local app_url = require 'conf.conf'.sailor.app_url
 local valua = require 'valua'
 local db = require 'sailor.db'
 local utils = require 'web_utils.utils'
+local requests = require 'requests'
 local access = require 'sailor.access'
 
 --- Valida los campos del formulario.
@@ -42,6 +43,27 @@ local function validate_tags(tags)
     end
   end
   return err
+end
+
+--- Obtiene una URL de respaldo de un sitio web desde archive.org
+-- @url URL del sitio web.
+-- @return Una URL desde archive.org o nil.
+local function archive(url)
+  local response = requests.get({
+    'http://archive.org/wayback/available',
+    params = {url = url},
+    timeout = 3
+  })
+  local res = response.json()
+  if res then
+    res = res.archived_snapshots
+    if next(res) then
+      res = res.closest.url
+    else
+      res = nil
+    end
+  end
+  return res
 end
 
 --- Lista todos los marcadores.
@@ -102,6 +124,8 @@ function M.create(page)
     -- Convierte los tags separados por espacios a un array.
     local tags = utils.split(tostring(tag.name or ''), "%s")
     tag.errors = validate_tags(tags)
+    -- Define un backup del sitio web desde archive.org
+    bookmark.archive = archive(bookmark.url)
     -- Desde el modelo valida todos los campos del formulario
     -- y registra un nuevo marcador.
     saved = not next(bookmark.errors) and not next(tag.errors) and bookmark:save()
@@ -155,6 +179,8 @@ function M.update(page)
     -- Convierte los tags separados por espacios a un array.
     local tags = utils.split(tostring(tag.name or ''), "%s")
     tag.errors = validate_tags(tags)
+    -- Define un backup del sitio web desde archive.org
+    bookmark.archive = archive(bookmark.url)
     -- Desde el modelo valida todos los campos del formulario
     -- y modifica los datos de un marcador.
     saved = not next(bookmark.errors) and bookmark:update()

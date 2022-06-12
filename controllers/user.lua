@@ -1,7 +1,7 @@
 local M = {}
 local User = require 'sailor.model'('user')
 local Role = require 'sailor.model'('role')
-local app_url = require('conf.conf').sailor.app_url
+local app_url = require 'conf.conf'.sailor.app_url
 local valua = require 'valua'
 local db = require 'sailor.db'
 local access = require 'sailor.access'

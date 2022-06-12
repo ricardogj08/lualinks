@@ -28,6 +28,10 @@ Lua and Sailor bookmark management.
 
     sudo luarocks install date
 
+[lua-requests](https://github.com/JakobGreen/lua-requests) (Requests for Lua!):
+
+    sudo luarocks install lua-requests
+
 ## Installation
 
     git clone https://github.com/ricardogj08/lualinks.git

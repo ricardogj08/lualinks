@@ -1,6 +1,6 @@
 local M = {}
 local Tag = require 'sailor.model'('tag')
-local app_url = require('conf.conf').sailor.app_url
+local app_url = require 'conf.conf'.sailor.app_url
 local valua = require 'valua'
 local db = require 'sailor.db'
 local access = require 'sailor.access'
