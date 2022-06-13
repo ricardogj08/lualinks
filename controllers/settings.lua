@@ -1,24 +1,28 @@
 local M = {}
-local User = require 'sailor.model'('user')
-local app_url = require 'conf.conf'.sailor.app_url
-local valua = require 'valua'
-local access = require 'sailor.access'
+local APP_URL = require 'conf.conf'.sailor.app_url
+local access = require('sailor.access')
+local User = require('sailor.model')('user')
+local Valua = require('valua')
 
---- Valida todos los campos del formulario.
--- @user Es una instancia del modelo user.
--- @page Objeto page del controlador.
--- @input Es una tabla con todos los campos a validar.
--- @return Una tabla de errores por cada campo.
+--- Valida los campos de un formulario.
+-- @param user object: Instancia del modelo user.
+-- @param page object: Objeto page del controlador.
+-- @param input table: Una tabla con todos los campos a validar.
+-- @return table: Una tabla de errores por cada campo.
 local function validate(user,page,input)
   local err,val = {}
   if input.username then
-    val,err.username = valua:new().not_empty().string()(user.username)
-    if val and User:find_by_attributes({username = user.username}) then
+    val,err.username = Valua:new().not_empty().string().
+      no_white().len(1,64)(user.username)
+    if val and User:find_by_attributes({
+      username = user.username
+    })
+    then
       err.username = 'username alredy exists'
     end
   end
   if input.password or input.username then
-    val,err.password = valua:new().not_empty().string().len(1, 64).
+    val,err.password = Valua:new().not_empty().string().len(8,64).
       no_white().compare(page.POST.confirm_password)(user.password)
     if err.password and input.username then
       err.password = 'Please confirm o set a new password'
@@ -27,61 +31,52 @@ local function validate(user,page,input)
   return err
 end
 
---- Consulta los datos de perfil de un usuario de sesión.
+--- Consulta los datos de perfil de un usuario.
 function M.view(page)
-  page:enable_cors({allow_origin = app_url})
+  page:enable_cors({allow_origin = APP_URL})
   if access.is_guest() then
     return page:redirect('user/login')
   end
-  local user,saved = User:find_by_id(access.data.id)
-  -- Valida si existe un campo del formulario.
+  local id,saved = access.data.id
+  local user = User:find_by_id(id)
   if next(page.POST) then
-    -- Elimina campos vacíos.
-    for k,v in pairs(page.POST) do
-      if v == '' then
-        page.POST[k] = nil
-      end
-    end
-    -- Obtiene todos los campos del formulario.
+    -- Obtiene los campos del formulario.
     user:get_post(page.POST)
-    local u = User:find_by_id(access.data.id)
-    user.role_id = u.role_id
+    local usr = User:find_by_id(id)
+    -- Asegura que el rol no se pueda modificar.
+    user.role_id = usr.role_id
     -- Valida solo los campos modificados.
     local input = {
-      username = user.username ~= u.username,
-      password = user.password ~= u.password
+      username = user.username ~= usr.username,
+      password = user.password
     }
-    user.errors = validate(user, page, input)
+    local err = validate(user,page,input)
     -- Cifra la contraseña.
-    saved = not next(user.errors)
-    if input.password and saved then
-      user.password = access.hash(user.username, user.password)
-    end
-    -- Desde el modelo valida todos los campos del formulario
-    -- y modifica los datos del usuario de sesión.
-    saved = saved and user:update()
-    if saved then
-      return page:redirect('settings/view')
-    end
+    user.password = input.password and not err.password and
+      access.hash(user.username, user.password) or usr.password
+    user.errors = err
+    -- Desde el modelo valida los campos
+    -- y modifica los datos del usuario.
+    saved = not next(err) and user:update()
+    page:inspect(user)
   end
-  user.password = nil
-  page.title = 'Settings'
-  return page:render('view', {user = user, saved = saved})
+  page.title,user.password = 'Settings'
+  page:render('view', {user = user, saved = saved})
 end
 
---- Elimina la cuenta de un usuario de sesión. 
+-- Elimina la cuenta de un usuario.
 function M.delete(page)
-  page:enable_cors({allow_origin = app_url})
+  page:enable_cors({allow_origin = APP_URL})
   if access.is_guest() then
     return page:redirect('user/login')
   end
   local user = User:find_by_id(access.data.id)
-  if user then
-    user:delete()
-    access.logout()
-    return page:redirect('user/index')
+  if not user then
+    return 404
   end
-  return 404
+  user:delete()
+  access.logout()
+  page:redirect('user/login')
 end
 
 return M

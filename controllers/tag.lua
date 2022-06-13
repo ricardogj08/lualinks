@@ -41,7 +41,7 @@ function M.update(page)
     id = page.GET.id,
     user_id  = id
   })
-  if not(tag) then
+  if not tag then
     return 404
   end
   local saved
@@ -69,7 +69,7 @@ function M.update(page)
     tag.errors.name = err
     -- Desde el modelo valida los campos
     -- y modifica el nombre del tag.
-    saved = not(err) and tag:update()
+    saved = not next(err) and tag:update()
   end
   page.title = 'Update tag'
   page:render('update', {tag = tag, saved = saved})
@@ -86,7 +86,7 @@ function M.view(page)
     id = page.GET.id,
     user_id = access.data.id
   })
-  if not(tag) then
+  if not tag then
     return 404
   end
   page.title = tag.name
@@ -104,7 +104,7 @@ function M.delete(page)
     id = page.GET.id,
     user_id = access.data.id
   })
-  if not(tag) then
+  if not tag then
     return 404
   end
   tag:delete()

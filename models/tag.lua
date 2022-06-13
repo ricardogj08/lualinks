@@ -1,14 +1,14 @@
 -- Uncomment this to use validation rules
-local val = require 'valua'
+local val = require('valua')
 local tag = {}
 
 -- Attributes and their validation rules
 tag.attributes = {
   -- {<attribute> = <validation function, valua required>}
   -- Ex. {id = val:new().integer()}
-  { id = val:new().integer().min(1) },
-  { name = val:new().not_empty().string().len(1, 64) },
-  { user_id = val:new().not_empty().integer().min(1) }
+  {id = val:new().integer().min(1)},
+  {name = val:new().not_empty().string().len(1,64)},
+  {user_id = val:new().not_empty().integer().min(1)}
 }
 
 tag.db = {
