@@ -1,100 +1,114 @@
 local M = {}
-local Tag = require 'sailor.model'('tag')
-local app_url = require 'conf.conf'.sailor.app_url
-local valua = require 'valua'
-local db = require 'sailor.db'
-local access = require 'sailor.access'
+local APP_URL = require 'conf.conf'.sailor.app_url
+local access = require('sailor.access')
+local Tag = require('sailor.model')('tag')
+local Valua = require('valua')
+local DB = require('sailor.db')
 
---- Lista todos los tags.
+--- Lista todos los tags de un usuario.
 function M.index(page)
-  page:enable_cors({allow_origin = app_url})
+  page:enable_cors({allow_origin = APP_URL})
   if access.is_guest() then
     return page:redirect('user/login')
   end
-  -- Sistema de búsqueda.
+  -- Obtiene el patrón de búsqueda.
   local search = page.POST.search
   if search then
     return page:redirect('tag/index', {search = search})
   end
   search = page.GET.search or ''
-  -- Búsqueda de marcadores.
-  db.connect()
+  -- Busca todos los tags de un usuario
+  -- desde un patrón de búsqueda.
+  DB.connect()
   local tags = Tag:find_all('user_id = '..access.data.id..
-    " AND name LIKE '%"..db.escape(search)..
-    "%' ORDER BY name ASC")
-  db.close()
+    " AND name LIKE '%"..DB.escape(search)..
+    "%' ORDER BY name ASC"
+  )
+  DB.close()
   page.title = 'Tags'
   page:render('index', {tags = tags, search = search})
 end
 
---- Modifica el nombre de un marcador.
+--- Modifica el nombre del tag de un usuario.
 function M.update(page)
-  page:enable_cors({allow_origin = app_url})
+  page:enable_cors({allow_origin = APP_URL})
   if access.is_guest() then
     return page:redirect('user/login')
   end
+  local id = access.data.id
+  -- Valida si el tag es del usuario.
   local tag = Tag:find_by_attributes({
-    id = page.GET.id, user_id = access.data.id
+    id = page.GET.id,
+    user_id  = id
   })
-  if not tag then
+  if not(tag) then
     return 404
   end
   local saved
-  -- Valida si existe un campo del formulario.
   if next(page.POST) then
-    -- Obtiene todos los campos del formulario.
+    -- Obtiene los campos del formulario.
     tag:get_post(page.POST)
-    tag.user_id = access.data.id
-    local val
-    val,tag.errors.name = valua:new().not_empty().string().
-      len(1, 64).no_white()(tag.name)
+    -- Asegura que el usuario asociado
+    -- al tag no se pueda modificar.
+    tag.user_id = id
+    -- Valida el nombre del tag.
+    local val,err
+    val,err = Valua:new().not_empty().string().
+      len(1,64).no_white()(tag.name)
+    if tag.name then
+      tag.name = tag.name:lower()
+    end
     -- Valida si el nombre del tag es único.
     if val and Tag:find_by_attributes({
-      user_id = access.data.id, name = tag.name
+      user_id = id,
+      name = tag.name
     })
     then
-      tag.errors.name = 'tag name alredy exists'
+      err = 'tag name alredy exists'
     end
-    -- Desde el modelo valida todos los campos del formulario
-    -- y modifica los datos del marcador.
-    saved = not next(tag.errors) and tag:update()
-    if saved then
-      return page:redirect('tag/update', {id = tag.id})
-    end
+    tag.errors.name = err
+    -- Desde el modelo valida los campos
+    -- y modifica el nombre del tag.
+    saved = not(err) and tag:update()
   end
+  page.title = 'Update tag'
   page:render('update', {tag = tag, saved = saved})
 end
 
---- Consulta los marcadores de un tag.
+--- Lista todos los marcadores del tag de un usuario.
 function M.view(page)
-  page:enable_cors({allow_origin = app_url})
+  page:enable_cors({allow_origin = APP_URL})
   if access.is_guest() then
     return page:redirect('user/login')
   end
+  -- Valida si el tag es del usuario.
   local tag = Tag:find_by_attributes({
-    id = page.GET.id, user_id = access.data.id
+    id = page.GET.id,
+    user_id = access.data.id
   })
-  if tag then
-    page.title = tag.name
-    return page:render('view', {tag = tag})
+  if not(tag) then
+    return 404
   end
-  return 404
+  page.title = tag.name
+  page:render('view', {tag = tag})
 end
 
---- Elimina un tag.
+--- Elimina el tag de un usuario.
 function M.delete(page)
-  page:enable_cors({allow_origin = app_url})
+  page:enable_cors({allow_origin = APP_URL})
   if access.is_guest() then
     return page:redirect('user/login')
   end
+  -- Valida si el tag es del usuario.
   local tag = Tag:find_by_attributes({
-    id = page.GET.id, user_id = access.data.id
+    id = page.GET.id,
+    user_id = access.data.id
   })
-  if tag then
-    tag:delete()
-    return page:redirect('tag/index')
+  if not(tag) then
+    return 404
   end
-  return 404
+  tag:delete()
+  page:redirect('tag/index')
 end
 
 return M
