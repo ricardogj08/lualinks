@@ -2,6 +2,10 @@
 
 Lua and Sailor bookmark management.
 
+Screenshot:
+
+![Screenshot](/screenshot.png?raw=true "Screenshot")
+
 ## Dependencies
 
 * [Lua >= 5.1, < 5.4](https://www.lua.org/home.html)
