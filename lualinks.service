@@ -1,0 +1,16 @@
+[Unit]
+Description=lualinks service
+ConditionPathExists=/var/www/lualinks
+After=network-online.target
+Requires=network-online.target
+
+[Service]
+Type=simple
+User=http
+Group=http
+Restart=always
+RestartSec=3
+ExecStart=cd /var/www/lualinks && sailor s
+
+[Install]
+WantedBy=multi-user.target
