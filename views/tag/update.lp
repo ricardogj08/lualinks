@@ -1,4 +1,4 @@
-<% local form = require 'sailor.form' %>
+<% local form = require('sailor.form') %>
 <section>
   <hgroup>
     <h1>Update tag</h1>
@@ -17,7 +17,9 @@
 
     <div class="grid">
       <input type="submit" value="Save" class="">
-      <a href="<%= page:make_url('tag/view', {id = tag.id}) %>"><input type="button" class="secondary" value="Cancel"></a>
+      <a href="<%= page:make_url('tag/view', {id = tag.id}) %>">
+        <input type="button" class="secondary" value="Cancel">
+      </a>
     </div>
 
     <% page:include('/views/incs/modal', {title = 'Delete this tag', msg = 'Are you sure you want to delete this tag?', route = page:make_url('tag/delete', {id = tag.id})}) %>

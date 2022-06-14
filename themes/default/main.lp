@@ -1,6 +1,6 @@
 <% local app_name = require 'conf.conf'.sailor.app_name %>
-<% local access = require 'sailor.access' %>
-<% local User = require 'sailor.model'('user') %>
+<% local access = require('sailor.access') %>
+<% local User = require('sailor.model')('user') %>
 <!doctype html>
 <html lang="es">
   <head>

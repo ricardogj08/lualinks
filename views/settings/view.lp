@@ -1,4 +1,4 @@
-<% local form = require 'sailor.form' %>
+<% local form = require('sailor.form') %>
 <article>
   <hgroup>
     <h1>Profile</h1>

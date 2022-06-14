@@ -52,8 +52,7 @@ function M.update(page)
     -- al tag no se pueda modificar.
     tag.user_id = id
     -- Valida el nombre del tag.
-    local val,err
-    val,err = Valua:new().not_empty().string().
+    local val,err = Valua:new().not_empty().string().
       len(1,64).no_white()(tag.name)
     if tag.name then
       tag.name = tag.name:lower()
@@ -69,7 +68,7 @@ function M.update(page)
     tag.errors.name = err
     -- Desde el modelo valida los campos
     -- y modifica el nombre del tag.
-    saved = not next(err) and tag:update()
+    saved = not err and tag:update()
   end
   page.title = 'Update tag'
   page:render('update', {tag = tag, saved = saved})

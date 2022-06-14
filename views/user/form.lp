@@ -1,4 +1,4 @@
-<% local form = require 'sailor.form' %>
+<% local form = require('sailor.form') %>
 <form method="post">
   <label>Username:
     <%= form.text(user, 'username', 'placeholder="Username" maxlength="64" required') %>
@@ -16,7 +16,7 @@
   </label>
 
   <label>Confirm password:
-    <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm password" minlength="8" maxlength="64">
+    <input type="password" name="confirm_password" placeholder="Confirm password" minlength="8" maxlength="64">
   </label>
 
   <div class="grid">

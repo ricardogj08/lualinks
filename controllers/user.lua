@@ -1,67 +1,74 @@
 local M = {}
-local User = require 'sailor.model'('user')
-local Role = require 'sailor.model'('role')
-local app_url = require 'conf.conf'.sailor.app_url
-local valua = require 'valua'
-local db = require 'sailor.db'
-local access = require 'sailor.access'
+local APP_URL = require 'conf.conf'.sailor.app_url
+local access = require('sailor.access')
+local User = require('sailor.model')('user')
+local Role = require('sailor.model')('role')
+local Valua = require('valua')
+local DB = require('sailor.db')
 
---- Valida si el usuario de sesión es administrador.
+--- Valida si un usuario es administrador.
+-- @param id integer: Identificador único del usuario.
+-- @return boolean
 local function is_admin(id)
   local user = User:find_by_id(id)
-  return user.role.name == 'admin'
+  return user and user.role.name == 'admin'
 end
 
---- Valida todos los campos del formulario.
--- @user Es una instancia del modelo user.
--- @page Objeto page del controlador.
--- @input Es una tabla con todos los campos a validar.
--- @return Una tabla de errores por cada campo.
+--- Valida los campos de un formulario.
+-- @param user object: Instancia del modelo user.
+-- @param page object: Objecto page del controlador.
+-- @param input table: Una tabla con todos los campos a validar.
+-- @return table: Una tabla de errores por cada campo.
 local function validate(user,page,input)
   local err,val = {}
   if input.username then
-    val,err.username = valua:new().not_empty().string()(user.username)
-    if val and User:find_by_attributes({username = user.username}) then
+    val,err.username = Valua:new().not_empty().string().
+      no_white().len(1,64)(user.username)
+    if val and User:find_by_attributes({
+      username = user.username
+    })
+    then
       err.username = 'username alredy exists'
     end
   end
   if input.role_id then
-    val,err.role_id = valua:new().not_empty().integer()(user.role_id)
+    val,err.role_id = Valua:new().not_empty().integer()(user.role_id)
     if val and not Role:find_by_id(user.role_id) then
       err.role_id = 'Invalid role id'
     end
   end
   if input.password or input.username then
-    val,err.password = valua:new().not_empty().string().len(1, 64).
+    val,err.password = Valua:new().not_empty().string().len(8,64).
       no_white().compare(page.POST.confirm_password)(user.password)
   end
   return err
 end
 
---- Obtiene todos los roles del sistema.
--- @return Un array de strings.
+--- Lista todos los roles del sistema.
+-- @return table: Una tabla de nombres de roles.
 local function roles()
   local roles = {}
-  for _,v in ipairs(Role:find_all()) do
-    roles[v.id] = v.description
+  for _,r in ipairs(Role:find_all()) do
+    roles[r.id] = r.description
   end
   return roles
 end
 
 --- Inicio de sesión.
 function M.login(page)
-  page:enable_cors({allow_origin = app_url})
+  page:enable_cors({allow_origin = APP_URL})
   if not access.is_guest() then
     return page:redirect('bookmark/index')
   end
-  local user,auth = User:new(),{}
-  -- Valida si existe un campo del formulario.
+  local user = User:new()
+  local auth = {}
   if next(page.POST) then
-    access.settings({model = 'user'})
+    -- Obtiene los campos del formulario.
     user:get_post(page.POST)
-    -- Credenciales de acceso.
-    auth.status,auth.err = access.login(user.username or '', user.password or '')
-    if auth.status then
+    -- Define las credenciales de acceso.
+    access.settings({model = 'user'})
+    auth.ok,auth.err = access.login(user.username or '', user.password or '')
+    if auth.ok then
       return page:redirect('bookmark/index')
     end
   end
@@ -70,75 +77,77 @@ end
 
 --- Cierre de sesión.
 function M.logout(page)
-  page:enable_cors({allow_origin = app_url})
+  page:enable_cors({allow_origin = APP_URL})
   access.logout()
   page:redirect('user/login')
 end
 
 --- Lista todos los usuarios.
 function M.index(page)
-  page:enable_cors({allow_origin = app_url})
+  page:enable_cors({allow_origin = APP_URL})
   if access.is_guest() then
     return page:redirect('user/login')
   end
   if not is_admin(access.data.id) then
     return 404
   end
-  -- Sistema de búsqueda.
+  -- Obtiene el patrón de búsqueda.
   local search = page.POST.search
   if search then
     return page:redirect('user/index', {search = search})
   end
   search = page.GET.search or ''
-  -- Sistema de paginación.
-  local p = tonumber(page.GET.page) or 1
-  if p < 1 then
+  -- Obtiene el número de paginación.
+  local index = tonumber(page.GET.index) or 1
+  if index < 1 then
     if search == '' then
-      return page:redirect('user/index', {page = 1})
+      return page:redirect('user/index', {index = 1})
     end
-    return page:redirect('user/index', {search = search, page = 1})
+    return page:redirect('user/index', {search = search, index = 1})
   end
   local limit = 15
-  local offset = limit * (p - 1)
-  -- Búsqueda de usuarios.
-  db.connect()
-  local users = User:find_all("username LIKE '%"..db.escape(search)..
-    "%' ORDER BY id LIMIT "..limit..' OFFSET '..offset)
-  db.close()
-  -- Sistema de paginación sin resultados.
-  if not next(users) and p > 1 then
+  local offset = limit * (index - 1)
+  -- Busca todos los usuarios desde un patrón de búsqueda.
+  DB.connect()
+  local users = User:find_all("username LIKE '%"..DB.escape(search)..
+    "%' ORDER BY id LIMIT "..limit..' OFFSET '..offset
+  )
+  DB.close()
+  -- Valida la paginación cuando no hay resultados.
+  if not next(users) and index > 1 then
     if search == '' then
-      return page:redirect('user/index', {page = p - 1})
+      return page:redirect('user/index', {index = index - 1})
     end
-    return page:redirect('user/index', {search = search, page = p - 1})
+    return page:redirect('user/index', {search = search, index = index - 1})
   end
   page.title = 'Users'
-  page:render('index', {users = users, search = search, p = p})
+  page:render('index', {users = users, search = search, index = index})
 end
 
 --- Registra un nuevo usuario.
 function M.create(page)
-  page:enable_cors({allow_origin = app_url})
+  page:enable_cors({allow_origin = APP_URL})
   if access.is_guest() then
     return page:redirect('user/login')
   end
   if not is_admin(access.data.id) then
     return 404
   end
-  local user = User:new()
-  local saved
-  -- Valida si existe un campo del formulario.
+  local user,saved = User:new()
   if next(page.POST) then
-    -- Obtiene todos los campos del formulario.
+    -- Obtiene los campos del formulario.
     user:get_post(page.POST)
-    -- Valida todos los campos del formulario.
-    user.errors = validate(user, page, {
-      username = true, role_id = true, password = true
+    -- Valida los campos del formulario.
+    local err = validate(user, page, {
+      username = true,
+      role_id = true,
+      password = true
     })
-    if not next(user.errors) then
+    user.errors = err
+    if not next(err) then
       -- Cifra la contraseña.
       user.password = access.hash(user.username, user.password)
-      -- Desde el modelo valida todos los campos del formulario
+      -- Desde el modelo valida los campos
       -- y registra un nuevo usuario.
       saved = user:save()
       if saved then
@@ -152,90 +161,80 @@ end
 
 --- Modifica los datos de un usuario.
 function M.update(page)
-  page:enable_cors({allow_origin = app_url})
+  page:enable_cors({allow_origin = APP_URL})
   if access.is_guest() then
     return page:redirect('user/login')
   end
   if not is_admin(access.data.id) then
     return 404
   end
+  -- Valida si el usuario existe.
   local id = page.GET.id
   local user = User:find_by_id(id)
   if not user then
     return 404
   end
   local saved
-  -- Valida si existe un campo del formulario.
   if next(page.POST) then
-    -- Elimina campos vacíos.
-    for k,v in pairs(page.POST) do
-      if v == '' then
-        page.POST[k] = nil
-      end
-    end
-    -- Obtiene todos los campos del formulario.
+    -- Obtiene los campos del formulario.
     user:get_post(page.POST)
-    local u = User:find_by_id(id)
-    local input = {}
+    local usr = User:find_by_id(id)
     -- Valida solo los campos modificados.
-    for k,v in pairs(user) do
-      if u[k] ~= v then
-        input[k] = true
-      end
-    end
-    user.errors = validate(user, page, input)
+    local input = {
+      username = user.username ~= usr.username,
+      role_id = user.role_id ~= usr.role_id,
+      password = user.password
+    }
+    local err = validate(user,page,input)
     -- Cifra la contraseña.
-    if user.errors.password and input.username then
-      user.errors.password = 'Please confirm o set a new password'
+    if input.username and err.password then
+      err.password = 'Please confirm o set a new password'
     end
-    saved = not next(user.errors)
-    if input.password and saved then
-      user.password = access.hash(user.username, user.password)
-    end
-    -- Desde el modelo valida todos los campos del formulario
-    -- y modifica los datos de un usuario.
-    saved = saved and user:update()
-    if saved then
-      return page:redirect('user/update', {id = id})
-    end
+    user.password = input.password and not err.password and
+      access.hash(user.username, user.password) or usr.password
+    user.errors = err
+    -- Desde el modelo valida los campos
+    -- y modifica los datos del usuario.
+    saved = not next(err) and user:update()
   end
-  user.password = nil
-  page.title = 'Update user'
+  page.title,user.password = 'Update user'
   page:render('update', {user = user, saved = saved, roles = roles()})
 end
 
 --- Consulta los datos de un usuario.
 function M.view(page)
-  page:enable_cors({allow_origin = app_url})
+  page:enable_cors({allow_origin = APP_URL})
   if access.is_guest() then
     return page:redirect('user/login')
   end
   if not is_admin(access.data.id) then
     return 404
   end
+  -- Valida si el usuario existe.
   local user = User:find_by_id(page.GET.id)
-  if user then
-    page.title = user.username
-    return page:render('view', {user = user})
+  if not user then
+    return 404
   end
-  return 404
+  page.title = user.username
+  page:render('view', {user = user})
 end
 
 --- Elimina un usuario.
 function M.delete(page)
-  page:enable_cors({allow_origin = app_url})
+  page:enable_cors({allow_origin = APP_URL})
   if access.is_guest() then
     return page:redirect('user/login')
   end
   if not is_admin(access.data.id) then
     return 404
   end
+  -- Valida si el usuario existe.
   local user = User:find_by_id(page.GET.id)
-  if user then
-    user:delete()
-    return page:redirect('user/index')
+  if not user then
+    return 404
   end
-  return 404
+  user:delete()
+  page:redirect('user/index')
 end
 
 return M

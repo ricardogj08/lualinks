@@ -1,11 +1,11 @@
-<% local form = require 'sailor.form' %>
+<% local form = require('sailor.form') %>
 <article>
   <hgroup>
     <h1>Login</h1>
     <h2>Please login to your account</h2>
   </hgroup>
 
-  <% if auth.status == false then %>
+  <% if auth.ok == false then %>
     <p><small><%= auth.err %></small></p>
   <% end %>
 
