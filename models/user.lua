@@ -1,15 +1,15 @@
--- Uncomment this to use validation rules
-local val = require 'valua'
 local user = {}
+-- Uncomment this to use validation rules
+local Valua = require('valua')
 
 -- Attributes and their validation rules
 user.attributes = {
   -- {<attribute> = <validation function, valua required>}
   -- Ex. {id = val:new().integer()}
-  { id = val:new().integer().min(1) },
-  { username = val:new().not_empty().string().len(1, 64).no_white() },
-  { role_id = val:new().not_empty().integer().min(1) },
-  { password = val:new().not_empty().string().len(1, 256).no_white() }
+  {id = Valua:new().integer().min(1)},
+  {username = Valua:new().not_empty().string().len(1,64).no_white()},
+  {role_id = Valua:new().not_empty().integer().min(1)},
+  {password = Valua:new().not_empty().string().len(1,256).no_white()}
 }
 
 user.db = {

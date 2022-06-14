@@ -1,17 +1,17 @@
--- Uncomment this to use validation rules
-local val = require 'valua'
 local bookmark = {}
+-- Uncomment this to use validation rules
+local Valua = require('valua')
 
 -- Attributes and their validation rules
 bookmark.attributes = {
   -- {<attribute> = <validation function, valua required>}
   -- Ex. {id = val:new().integer()}
-  { id = val:new().integer().min(1) },
-  { user_id = val:new().not_empty().integer().min(1) },
-  { url = val:new().not_empty().string().len(1, 2048) },
-  { archive = val:new().optional().string().len(1, 2048) },
-  { title = val:new().not_empty().string().len(1, 512) },
-  { description = val:new().optional().string().len(1, 1024) }
+  {id = Valua:new().integer().min(1)},
+  {user_id = Valua:new().not_empty().integer().min(1)},
+  {url = Valua:new().not_empty().string().len(1,2048)},
+  {archive = Valua:new().optional().string().len(1,2048)},
+  {title = Valua:new().not_empty().string().len(1,512)},
+  {description = Valua:new().optional().string().len(1,1024)}
 }
 
 bookmark.db = {
