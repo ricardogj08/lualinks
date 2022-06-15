@@ -11,5 +11,5 @@
   </p>
 
   <% page:include('/views/incs/bookmarks', {bookmarks = bookmarks}) %>
-  <% page:include('/views/incs/pagination', {controller = 'bookmark', search = search, p = p}) %>
+  <% page:include('/views/incs/pagination', {controller = 'bookmark', search = search, index = index}) %>
 </section>

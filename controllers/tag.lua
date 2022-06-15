@@ -35,11 +35,11 @@ function M.update(page)
   if access.is_guest() then
     return page:redirect('user/login')
   end
-  local id = access.data.id
+  local user_id = access.data.id
   -- Valida si el tag es del usuario.
   local tag = Tag:find_by_attributes({
     id = page.GET.id,
-    user_id  = id
+    user_id  = user_id
   })
   if not tag then
     return 404
@@ -50,7 +50,7 @@ function M.update(page)
     tag:get_post(page.POST)
     -- Asegura que el usuario asociado
     -- al tag no se pueda modificar.
-    tag.user_id = id
+    tag.user_id = user_id
     -- Valida el nombre del tag.
     local val,err = Valua:new().not_empty().string().
       len(1,64).no_white()(tag.name)
@@ -59,7 +59,7 @@ function M.update(page)
     end
     -- Valida si el nombre del tag es único.
     if val and Tag:find_by_attributes({
-      user_id = id,
+      user_id = user_id,
       name = tag.name
     })
     then

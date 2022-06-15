@@ -8,8 +8,8 @@ bookmark.attributes = {
   -- Ex. {id = val:new().integer()}
   {id = Valua:new().integer().min(1)},
   {user_id = Valua:new().not_empty().integer().min(1)},
-  {url = Valua:new().not_empty().string().len(1,2048)},
-  {archive = Valua:new().optional().string().len(1,2048)},
+  {url = Valua:new().not_empty().string().len(1,2048).no_white()},
+  {archive = Valua:new().optional().string().len(1,2048).no_white()},
   {title = Valua:new().not_empty().string().len(1,512)},
   {description = Valua:new().optional().string().len(1,1024)}
 }

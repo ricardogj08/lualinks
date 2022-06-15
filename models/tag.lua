@@ -7,7 +7,7 @@ tag.attributes = {
   -- {<attribute> = <validation function, valua required>}
   -- Ex. {id = val:new().integer()}
   {id = Valua:new().integer().min(1)},
-  {name = Valua:new().not_empty().string().len(1,64)},
+  {name = Valua:new().not_empty().string().len(1,64).no_white()},
   {user_id = Valua:new().not_empty().integer().min(1)}
 }
 

@@ -12,8 +12,8 @@ local Valua = require('valua')
 local function validate(user,page,input)
   local err,val = {}
   if input.username then
-    val,err.username = Valua:new().not_empty().string().
-      no_white().len(1,64)(user.username)
+    val,err.username = Valua:new().not_empty().
+      string().len(1,64).no_white()(user.username)
     if val and User:find_by_attributes({
       username = user.username
     })
