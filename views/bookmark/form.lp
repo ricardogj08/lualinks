@@ -1,4 +1,4 @@
-<% local form = require 'sailor.form' %>
+<% local form = require('sailor.form') %>
 <form method="post">
   <label>URL:
     <%= form.url(bookmark, 'url', 'placeholder="URL" maxlength="2048" required') %>

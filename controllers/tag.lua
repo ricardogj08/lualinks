@@ -39,7 +39,7 @@ function M.update(page)
   -- Valida si el tag es del usuario.
   local tag = Tag:find_by_attributes({
     id = page.GET.id,
-    user_id  = user_id
+    user_id = user_id
   })
   if not tag then
     return 404
@@ -52,9 +52,9 @@ function M.update(page)
     -- al tag no se pueda modificar.
     tag.user_id = user_id
     -- Valida el nombre del tag.
-    local val,err = Valua:new().not_empty().string().
-      len(1,64).no_white()(tag.name)
-    if tag.name then
+    local val,err = Valua:new().not_empty().
+      string().len(1,64).no_white()(tag.name)
+    if val then
       tag.name = tag.name:lower()
     end
     -- Valida si el nombre del tag es único.

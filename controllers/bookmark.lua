@@ -176,9 +176,9 @@ function M.update(page)
     -- Obtiene los campos del formulario.
     bookmark:get_post(page.POST)
     tag:get_post(page.POST)
-    local bm = Bookmark:find_by_id(id)
     -- Asegura que el id del usuario no se pueda modificar.
-    bookmark.user_id = bm.user_id
+    bookmark.user_id = user_id
+    local bm = Bookmark:find_by_id(id)
     -- Valida solo los campos modificados.
     local input = {
       url = bookmark.url ~= bm.url,
@@ -234,8 +234,7 @@ function M.update(page)
       end
       -- Elimina la asociación de un tag al marcardor
       -- si no existe en el campo del formulario.
-      local old = bookmark.tags
-      for i,t in ipairs(old) do
+      for _,t in ipairs(bookmark.tags) do
         if not Valua:new().in_list(tags)(t.name) then
           bm_tag = Bookmark_Tag:find_by_attributes({
             bookmark_id = id,

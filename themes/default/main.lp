@@ -53,7 +53,6 @@
         </small>
       </p>
     </footer>
+    <script src="https://unpkg.com/@picocss/pico@latest/docs/js/modal.min.js" crossorigin="anonymous"></script>
   </body>
-
-  <script src="https://unpkg.com/@picocss/pico@latest/docs/js/modal.min.js" crossorigin="anonymous"></script>
 </html>

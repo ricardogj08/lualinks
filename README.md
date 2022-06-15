@@ -2,7 +2,7 @@
 
 Lua and Sailor bookmark management.
 
-Screenshot:
+**Screenshot:**
 
 ![Screenshot](/screenshot.png?raw=true "Screenshot")
 
@@ -26,7 +26,7 @@ Screenshot:
 
 [LuaSQL](https://github.com/keplerproject/luasql) with MySQL driver (A simple interface from Lua to a DBMS):
 
-    luarocks install luasql-mysql
+    sudo luarocks install luasql-mysql
 
 [LuaDate v2.2](https://github.com/Tieske/date) (Lua Date and Time module for Lua 5.x):
 
