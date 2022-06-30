@@ -1,2 +1,2 @@
-local sailor = require "sailor"
+local sailor = require('sailor')
 sailor.launch()

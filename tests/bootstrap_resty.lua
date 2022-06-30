@@ -1,7 +1,7 @@
-sailor = require "sailor"
-local t = require "sailor.test"
-local busted = require 'busted.runner'
-local lfs = require 'lfs'
+sailor = require('sailor')
+local t = require('sailor.test')
+local busted = require('busted.runner')
+local lfs = require('lfs')
 
 -- load fixtures
 -- t.load_fixtures()
@@ -24,8 +24,8 @@ local busted_lib = {
 }
 
 local test_dirs = {
-  "tests/unit",
-  "tests/functional",
+  'tests/unit',
+  'tests/functional',
 }
 
 -- Get busted vars to pass them ahead when loading each test file

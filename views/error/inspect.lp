@@ -19,11 +19,11 @@
 </style>
 
 <table id="sailor_error_inspect">
-  <?lua for k,v in pairs(page.trace) do ?>
+  <% for k,v in pairs(page.trace) do %>
     <tr>
       <td>
         <%= (string.gsub(page:tostring(v),"<br/>","",1)) %>
       </td>
     </tr>
-  <?lua end ?>
+  <% end %>
 </table>

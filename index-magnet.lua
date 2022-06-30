@@ -15,8 +15,8 @@ if lighty ~= nil then
   end
 
   -- Makes lighty global so it can be accessed by Remy or controllers
-  _G["lighty"] = lighty
-  local sailor = require "sailor"
+  _G['lighty'] = lighty
+  local sailor = require('sailor')
   sailor.launch()
   return sailor.r.status
 end

@@ -1,7 +1,7 @@
-local xavante = require "xavante"
-local filehandler = require "xavante.filehandler"
-local cgiluahandler = require "xavante.cgiluahandler"
-local redirect = require "xavante.redirecthandler"
+local xavante = require('xavante')
+local filehandler = require('xavante.filehandler')
+local cgiluahandler = require('xavante.cgiluahandler')
+local redirect = require('xavante.redirecthandler')
 local conf = (require "conf.conf").sailor
 
 -- Define here where Xavante HTTP documents scripts are located
@@ -19,7 +19,7 @@ if conf.friendly_urls then
       function(req,_,cap)
         local vars = {}
 
-        for var in string.gmatch(cap[1], '([^/]+)') do
+        for var in string.gmatch(cap[1], "([^/]+)") do
           table.insert(vars,var)
         end
 
