@@ -42,7 +42,7 @@ Lua and Sailor bookmark management.
     cd lualinks
 
 1. Create the lualinks database in MariaDB with the `db/db.sql` script.
-2. Modify the lualinks database access credentials in `conf/conf.lua`.
+2. Modifies the lualinks database access credentials in `conf/conf.lua`.
 
 ## Run
 
