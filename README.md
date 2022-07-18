@@ -1,6 +1,6 @@
 # lualinks
 
-Lua and Sailor bookmark management.
+Lua and Sailor bookmark manager.
 
 **Screenshot:**
 
@@ -64,7 +64,7 @@ Lua and Sailor bookmark management.
 
 ## License
 
-    lualinks - Lua and Sailor bookmark management.
+    lualinks - Lua and Sailor bookmark manager.
 
     Copyright (C) 2022 - Ricardo García Jiménez <ricardogj08@riseup.net>
 
